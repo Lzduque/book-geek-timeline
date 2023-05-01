@@ -75,21 +75,41 @@ addEntry bookNumber entry books =
 view : Model -> Html Msg
 view model =
   div []
-    [ viewInput "text" "Name" model.name Name
-    , viewInput "password" "Password" model.password Password
-    , viewInput "password" "Re-enter Password" model.passwordAgain PasswordAgain
-    , viewValidation model
-    ]
+        [ p [ style "text-align" "right" ]
+            [ text "— "
+            , text ("Timeline: " ++ model.bookSeriesName ++ "Books: ")
+            ]
+            , viewBook model.books
+        ]
 
 
-viewInput : String -> String -> String -> (String -> msg) -> Html msg
-viewInput t p v toMsg =
-  input [ type_ t, placeholder p, value v, onInput toMsg ] []
+viewBook : List Book -> Html Msg
+viewBook books =
+    let 
+        bookView b =
+            div []
+                    [ p [ style "text-align" "right" ]
+                        [ text "— "
+                        , text ("Books: " ++ b.name)
+                        , text ("Order: " ++ (String.fromInt b.order))
+                        , text ("Year: " ++ (String.fromInt b.year))
+                        , text ("Month: " ++ b.month)
+                        , text ("Entries: ")
+                        , viewEntries b.entries
+                    ]
+                    ]
+    in div [] (List.map bookView books)
 
 
-viewValidation : Model -> Html msg
-viewValidation model =
-  if model.password == model.passwordAgain then
-    div [ style "color" "green" ] [ text "OK" ]
-  else
-    div [ style "color" "red" ] [ text "Passwords do not match!" ]
+viewEntries : List Entry -> Html msg
+viewEntries entries =
+    let
+        entryView e =
+            div []
+                    [ p [ style "text-align" "right" ]
+                        [ text "— "
+                        , text "Entries: "
+                        , text e.content
+                    ]
+                    ]
+    in div [] (List.map entryView entries)
