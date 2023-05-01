@@ -75,9 +75,13 @@ addEntry bookNumber entry books =
 view : Model -> Html Msg
 view model =
   div []
-        [ p [ style "text-align" "right" ]
+        [ p [ style "text-align" "left" ]
             [ text "— "
-            , text ("Timeline: " ++ model.bookSeriesName ++ "Books: ")
+            , text ("Timeline: " ++ model.bookSeriesName)
+            ]
+            , p [ style "text-align" "left" ]
+            [ text "— "
+            , text ("Books: ")
             ]
             , viewBook model.books
         ]
@@ -88,14 +92,28 @@ viewBook books =
     let 
         bookView b =
             div []
-                    [ p [ style "text-align" "right" ]
-                        [ text "— "
-                        , text ("Books: " ++ b.name)
+                    [ p [ style "text-align" "left" ]
+                        [ text "—— "
+                        , text ("Book: " ++ b.name)
+                    ]
+                    , p [ style "text-align" "left" ]
+                        [ text "—— "
                         , text ("Order: " ++ (String.fromInt b.order))
+                    ]
+                    , p [ style "text-align" "left" ]
+                        [ text "—— "
                         , text ("Year: " ++ (String.fromInt b.year))
+                    ]
+                    , p [ style "text-align" "left" ]
+                        [ text "—— "
                         , text ("Month: " ++ b.month)
+                    ]
+                    , p [ style "text-align" "left" ]
+                        [ text "—— "
                         , text ("Entries: ")
-                        , viewEntries b.entries
+                    ]
+                    , p [ style "text-align" "left" ]
+                        [ viewEntries b.entries
                     ]
                     ]
     in div [] (List.map bookView books)
@@ -106,9 +124,8 @@ viewEntries entries =
     let
         entryView e =
             div []
-                    [ p [ style "text-align" "right" ]
-                        [ text "— "
-                        , text "Entries: "
+                    [ p [ style "text-align" "left" ]
+                        [ text "——— "
                         , text e.content
                     ]
                     ]
