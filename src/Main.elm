@@ -18,40 +18,55 @@ main =
 -- MODEL
 
 
-type alias Model =
-  { name : String
-  , password : String
-  , passwordAgain : String
+type alias Entry =
+  {content: String}
+
+type alias Book = 
+  { name: String
+  , order: Int
+  , year: Int
+  , month: String
+  , entries: List Entry
   }
+
+type alias Timeline =
+ { bookSeriesName : String
+  , books : List Book
+  }
+  
+type alias Model = Timeline 
 
 
 init : Model
 init =
-  Model "" "" ""
-
+  Timeline "Anita Blake" [Book "Guilty Pleasures" 1 0 "July" [Entry "Nikolaos dies", Entry "Jean-Claude becames Master of the City", Entry "Anita receives the first and second marks"]]
 
 
 -- UPDATE
 
 
 type Msg
-  = Name String
-  | Password String
-  | PasswordAgain String
+  = NewBook Book
+  | NewEntry Int Entry
 
 
 update : Msg -> Model -> Model
 update msg model =
   case msg of
-    Name name ->
-      { model | name = name }
+    NewBook book ->
+      { model | books = model.books ++ [book] }
 
-    Password password ->
-      { model | password = password }
+    NewEntry bookNumber entry ->
+      { model | books = addEntry bookNumber entry model.books }
 
-    PasswordAgain password ->
-      { model | passwordAgain = password }
 
+addEntry : Int -> Entry -> List Book -> List Book
+addEntry bookNumber entry books =
+    let findBook b = 
+           if b.order == bookNumber then
+            { b | entries = b.entries ++ [entry]}
+           else b
+    in List.map findBook books
 
 
 -- VIEW
