@@ -1,27 +1,17 @@
 module Main exposing (..)
 
 import Browser
-import Browser.Navigation as Nav
 import Html exposing (..)
 import Html.Attributes exposing (..)
-import Url
+import Html.Events exposing (onInput)
 
 
 
 -- MAIN
 
 
-main : Program () Model Msg
 main =
-  Browser.application
-    { init = init
-    , view = view
-    , update = update
-    , subscriptions = subscriptions
-    , onUrlChange = UrlChanged
-    , onUrlRequest = LinkClicked
-    }
-
+  Browser.sandbox { init = init, update = update, view = view }
 
 
 
@@ -29,14 +19,15 @@ main =
 
 
 type alias Model =
-  { key : Nav.Key
-  , url : Url.Url
+  { name : String
+  , password : String
+  , passwordAgain : String
   }
 
 
-init : () -> Url.Url -> Nav.Key -> ( Model, Cmd Msg )
-init flags url key =
-  ( Model key url, Cmd.none )
+init : Model
+init =
+  Model "" "" ""
 
 
 
@@ -44,57 +35,46 @@ init flags url key =
 
 
 type Msg
-  = LinkClicked Browser.UrlRequest
-  | UrlChanged Url.Url
+  = Name String
+  | Password String
+  | PasswordAgain String
 
 
-update : Msg -> Model -> ( Model, Cmd Msg )
+update : Msg -> Model -> Model
 update msg model =
   case msg of
-    LinkClicked urlRequest ->
-      case urlRequest of
-        Browser.Internal url ->
-          ( model, Nav.pushUrl model.key (Url.toString url) )
+    Name name ->
+      { model | name = name }
 
-        Browser.External href ->
-          ( model, Nav.load href )
+    Password password ->
+      { model | password = password }
 
-    UrlChanged url ->
-      ( { model | url = url }
-      , Cmd.none
-      )
-
-
-
--- SUBSCRIPTIONS
-
-
-subscriptions : Model -> Sub Msg
-subscriptions _ =
-  Sub.none
+    PasswordAgain password ->
+      { model | passwordAgain = password }
 
 
 
 -- VIEW
 
 
-view : Model -> Browser.Document Msg
+view : Model -> Html Msg
 view model =
-  { title = "URL Interceptor"
-  , body =
-      [ text "The current URL is: "
-      , b [] [ text (Url.toString model.url) ]
-      , ul []
-          [ viewLink "/home"
-          , viewLink "/profile"
-          , viewLink "/reviews/the-century-of-the-self"
-          , viewLink "/reviews/public-opinion"
-          , viewLink "/reviews/shah-of-shahs"
-          ]
-      ]
-  }
+  div []
+    [ viewInput "text" "Name" model.name Name
+    , viewInput "password" "Password" model.password Password
+    , viewInput "password" "Re-enter Password" model.passwordAgain PasswordAgain
+    , viewValidation model
+    ]
 
 
-viewLink : String -> Html msg
-viewLink path =
-  li [] [ a [ href path ] [ text path ] ]
+viewInput : String -> String -> String -> (String -> msg) -> Html msg
+viewInput t p v toMsg =
+  input [ type_ t, placeholder p, value v, onInput toMsg ] []
+
+
+viewValidation : Model -> Html msg
+viewValidation model =
+  if model.password == model.passwordAgain then
+    div [ style "color" "green" ] [ text "OK" ]
+  else
+    div [ style "color" "red" ] [ text "Passwords do not match!" ]
