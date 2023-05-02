@@ -4,6 +4,7 @@ import Browser
 import Html exposing (..)
 import Html.Attributes exposing (..)
 import Html.Events exposing (onInput)
+import Html.Events exposing (onClick)
 
 
 
@@ -18,15 +19,14 @@ main =
 -- MODEL
 
 
-type alias Entry =
-  {content: String}
+type alias Entry = String
 
 type alias Book = 
-  { name: String
-  , order: Int
-  , year: Int
-  , month: String
-  , entries: List Entry
+  { name : String
+  , number : String
+  , year : String
+  , month : String
+  , entries : List Entry
   }
 
 type alias Timeline =
@@ -34,39 +34,123 @@ type alias Timeline =
   , books : List Book
   }
   
-type alias Model = Timeline 
+type alias Model = 
+  { timeline : Timeline
+   , newBookFormField : Book
+   , newEntryFormField : { content : Entry, bookNumber : String }
+  } 
 
 
 init : Model
 init =
-  Timeline "Anita Blake" [Book "Guilty Pleasures" 1 0 "July" [Entry "Nikolaos dies", Entry "Jean-Claude becames Master of the City", Entry "Anita receives the first and second marks"]]
+  { timeline = initialTimeline
+   , newBookFormField = initialBook
+   , newEntryFormField = { content = initialEntry, bookNumber = "0" }
+  } 
 
+
+initialTimeline : Timeline
+initialTimeline =
+ { bookSeriesName = "Anita Blake"
+  , books = [Book "Guilty Pleasures" "1" "0" "July" ["Nikolaos dies", "Jean-Claude becames Master of the City", "Anita receives the first and second marks"]]
+  }
+
+initialBook : Book
+initialBook =
+  { name = ""
+  , number = "0"
+  , year = "0"
+  , month = "Jan"
+  , entries = []
+  }
+
+initialEntry : Entry
+initialEntry = ""
 
 -- UPDATE
 
 
 type Msg
-  = NewBook Book
-  | NewEntry Int Entry
+  = NewBook
+  | NewEntry
+  | SetBookNumber String
+  | SetBookName String
+  | SetBookYear String
+  | SetBookMonth String
+  | SetBookEntryContent String
+  | SetBookEntryNumber String
 
 
 update : Msg -> Model -> Model
 update msg model =
   case msg of
-    NewBook book ->
-      { model | books = model.books ++ [book] }
+    NewBook ->
+      { model | timeline = addBook model.timeline model.newBookFormField }
 
-    NewEntry bookNumber entry ->
-      { model | books = addEntry bookNumber entry model.books }
+    NewEntry ->
+      { model | timeline = addEntry model.newEntryFormField.bookNumber model.newEntryFormField.content model.timeline }
+    
+    SetBookNumber number ->
+      { model | newBookFormField = addBookNumber model.newBookFormField number }
+
+    SetBookName name ->
+      { model | newBookFormField = addBookName model.newBookFormField name }
+
+    SetBookYear year ->
+      { model | newBookFormField = addBookYear model.newBookFormField year }
+
+    SetBookMonth month ->
+      { model | newBookFormField = addBookMonth model.newBookFormField month }
+
+    SetBookEntryContent content ->
+      { model | newEntryFormField = addEntryContent model.newEntryFormField content }
+
+    SetBookEntryNumber bookNumber ->
+      { model | newEntryFormField = addEntryBookNumber model.newEntryFormField bookNumber }
 
 
-addEntry : Int -> Entry -> List Book -> List Book
-addEntry bookNumber entry books =
+addEntryBookNumber : { content : Entry, bookNumber : String } -> String -> { content : Entry, bookNumber : String }
+addEntryBookNumber entry bookNumber =
+    { entry | bookNumber = bookNumber}
+
+
+addEntryContent : { content : Entry, bookNumber : String } -> String -> { content : Entry, bookNumber : String }
+addEntryContent entry content =
+    { entry | content = content}
+
+
+addBookNumber : Book -> String -> Book
+addBookNumber book number =
+    { book | number = number}
+
+
+addBookName : Book -> String -> Book
+addBookName book name =
+    { book | name = name}
+
+
+addBookYear : Book -> String -> Book
+addBookYear book year =
+    { book | year = year}
+
+
+addBookMonth : Book -> String -> Book
+addBookMonth book month =
+    { book | month = month}
+
+
+addEntry : String -> Entry -> Timeline -> Timeline
+addEntry bookNumber entry timeline =
     let findBook b = 
-           if b.order == bookNumber then
+           if b.number == bookNumber then
             { b | entries = b.entries ++ [entry]}
            else b
-    in List.map findBook books
+    in { timeline | books = List.map findBook timeline.books}
+
+
+addBook : Timeline -> Book -> Timeline
+addBook timeline book =
+    { timeline | books = timeline.books ++ [book]}
 
 
 -- VIEW
@@ -77,14 +161,56 @@ view model =
   div []
         [ p [ style "text-align" "left" ]
             [ text "— "
-            , text ("Timeline: " ++ model.bookSeriesName)
+            , text ("Timeline: " ++ model.timeline.bookSeriesName)
             ]
             , p [ style "text-align" "left" ]
             [ text "— "
             , text ("Books: ")
             ]
-            , viewBook model.books
+            , viewBook model.timeline.books
+            , p [ style "text-align" "left" ]
+            [ text "— "
+            , text ("Add new Book: ")
+            ]
+            , Html.form [] 
+                [ label []
+                    [ text "Number"
+                    , input [ type_ "text", name "number", onInput SetBookNumber ] []
+                    ]
+                , label []
+                    [ text "Name"
+                    , input [ type_ "text", name "name", onInput SetBookName  ] []
+                    ]
+                , label []
+                    [ text "Year"
+                    , input [ type_ "text", name "year", onInput SetBookYear  ] []
+                    ]
+                , label []
+                    [ text "Month"
+                    , input [ type_ "text", name "month" , onInput SetBookMonth  ] []
+                    ]
+                , button [ onClick NewBook ] [ text "Submit" ]
+                ]
+            , p [ style "text-align" "left" ]
+            [ text "— Add New Entry: "]
+            , Html.form [] 
+                [ label []
+                    [ text "Book Number"
+                    , input [ type_ "text", name "bookNumber", onInput SetBookEntryNumber ] []
+                    ]
+                , label []
+                    [ text "Content"
+                    , input [ type_ "text", name "content", onInput SetBookEntryContent  ] []
+                    ]
+                , button [ onClick NewBook ] [ text "Submit" ]
+                ]
+            -- form : List (Attribute msg) -> List (Html msg) -> Html msg
+            -- , p [ style "text-align" "left" ]
+            -- [ text "— "
+            -- , text ("Add new Entry: ")
+            -- ] -- TODO
         ]
+
 
 
 viewBook : List Book -> Html Msg
@@ -98,11 +224,11 @@ viewBook books =
                     ]
                     , p [ style "text-align" "left" ]
                         [ text "—— "
-                        , text ("Order: " ++ (String.fromInt b.order))
+                        , text ("Number: " ++ b.number)
                     ]
                     , p [ style "text-align" "left" ]
                         [ text "—— "
-                        , text ("Year: " ++ (String.fromInt b.year))
+                        , text ("Year: " ++ b.year)
                     ]
                     , p [ style "text-align" "left" ]
                         [ text "—— "
@@ -126,7 +252,7 @@ viewEntries entries =
             div []
                     [ p [ style "text-align" "left" ]
                         [ text "——— "
-                        , text e.content
+                        , text e
                     ]
                     ]
     in div [] (List.map entryView entries)
