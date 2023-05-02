@@ -202,13 +202,8 @@ view model =
                     [ text "Content"
                     , input [ type_ "text", name "content", onInput SetBookEntryContent  ] []
                     ]
-                , button [ onClick NewBook ] [ text "Submit" ]
+                , button [ onClick NewEntry ] [ text "Submit" ]
                 ]
-            -- form : List (Attribute msg) -> List (Html msg) -> Html msg
-            -- , p [ style "text-align" "left" ]
-            -- [ text "— "
-            -- , text ("Add new Entry: ")
-            -- ] -- TODO
         ]
 
 
