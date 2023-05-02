@@ -3,8 +3,7 @@ module Main exposing (..)
 import Browser
 import Html exposing (..)
 import Html.Attributes exposing (..)
-import Html.Events exposing (onInput)
-import Html.Events exposing (onClick)
+import Html.Events exposing (onInput, onClick)
 
 
 
@@ -12,7 +11,12 @@ import Html.Events exposing (onClick)
 
 
 main =
-  Browser.sandbox { init = init, update = update, view = view }
+  Browser.element
+    { init = init
+    , update = update
+    , subscriptions = subscriptions
+    , view = view
+    }
 
 
 
@@ -41,13 +45,19 @@ type alias Model =
   } 
 
 
-init : Model
-init =
-  { timeline = initialTimeline
-   , newBookFormField = initialBook
-   , newEntryFormField = { content = initialEntry, bookNumber = "0" }
-  } 
+init : () -> (Model, Cmd Msg)
+init _ =
+  ( initialModel
+  , Cmd.none
+  )
 
+
+initialModel : Model
+initialModel =
+ { timeline = initialTimeline
+    , newBookFormField = initialBook
+    , newEntryFormField = { content = initialEntry, bookNumber = "0" }
+  }
 
 initialTimeline : Timeline
 initialTimeline =
@@ -81,32 +91,47 @@ type Msg
   | SetBookEntryNumber String
 
 
-update : Msg -> Model -> Model
+update : Msg -> Model -> (Model, Cmd Msg)
 update msg model =
-  case msg of
+  case Debug.log "msg" msg of
     NewBook ->
-      { model | timeline = addBook model.timeline model.newBookFormField }
+      ({ model | timeline = addBook model.timeline model.newBookFormField }
+      , Cmd.none
+      )
 
     NewEntry ->
-      { model | timeline = addEntry model.newEntryFormField.bookNumber model.newEntryFormField.content model.timeline }
+     ( { model | timeline = addEntry model.newEntryFormField.bookNumber model.newEntryFormField.content model.timeline }
+      , Cmd.none
+      )
     
     SetBookNumber number ->
-      { model | newBookFormField = addBookNumber model.newBookFormField number }
+      ({ model | newBookFormField = addBookNumber model.newBookFormField number }
+      , Cmd.none
+      )
 
     SetBookName name ->
-      { model | newBookFormField = addBookName model.newBookFormField name }
+      ({ model | newBookFormField = addBookName model.newBookFormField name }
+      , Cmd.none
+      )
 
     SetBookYear year ->
-      { model | newBookFormField = addBookYear model.newBookFormField year }
+      ({ model | newBookFormField = addBookYear model.newBookFormField year }
+      , Cmd.none)
 
     SetBookMonth month ->
-      { model | newBookFormField = addBookMonth model.newBookFormField month }
+      ({ model | newBookFormField = addBookMonth model.newBookFormField month }
+      , Cmd.none
+      )
 
     SetBookEntryContent content ->
-      { model | newEntryFormField = addEntryContent model.newEntryFormField content }
+      ({ model | newEntryFormField = addEntryContent model.newEntryFormField content }
+      , Cmd.none
+      )
 
     SetBookEntryNumber bookNumber ->
-      { model | newEntryFormField = addEntryBookNumber model.newEntryFormField bookNumber }
+      ({ model | newEntryFormField = addEntryBookNumber model.newEntryFormField bookNumber }
+      , Cmd.none
+      )
 
 
 addEntryBookNumber : { content : Entry, bookNumber : String } -> String -> { content : Entry, bookNumber : String }
@@ -151,6 +176,15 @@ addEntry bookNumber entry timeline =
 addBook : Timeline -> Book -> Timeline
 addBook timeline book =
     { timeline | books = timeline.books ++ [book]}
+
+
+-- SUBSCRIPTIONS
+
+
+subscriptions : Model -> Sub Msg
+subscriptions model =
+  Sub.none
+
 
 
 -- VIEW
