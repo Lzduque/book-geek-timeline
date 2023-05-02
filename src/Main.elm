@@ -62,7 +62,8 @@ initialModel =
 initialTimeline : Timeline
 initialTimeline =
  { bookSeriesName = "Anita Blake"
-  , books = [Book "Guilty Pleasures" "1" "0" "July" ["Nikolaos dies", "Jean-Claude becames Master of the City", "Anita receives the first and second marks"]]
+  , books = [Book "Guilty Pleasures" "1" "0" "July" ["Nikolaos dies", "Jean-Claude becames Master of the City", "Anita receives the first and second marks"]
+  , Book "The Laughing Corpse" "2" "0" "August" []]
   }
 
 initialBook : Book
@@ -206,7 +207,7 @@ view model =
             [ text "— "
             , text ("Add new Book: ")
             ]
-            , Html.form [] 
+            , div [] 
                 [ label []
                     [ text "Number"
                     , input [ type_ "text", name "number", onInput SetBookNumber ] []
@@ -227,7 +228,7 @@ view model =
                 ]
             , p [ style "text-align" "left" ]
             [ text "— Add New Entry: "]
-            , Html.form [] 
+            , div [] 
                 [ label []
                     [ text "Book Number"
                     , input [ type_ "text", name "bookNumber", onInput SetBookEntryNumber ] []
