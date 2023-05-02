@@ -10,6 +10,7 @@ import Html.Events exposing (onInput, onClick)
 -- MAIN
 
 
+main : Program () Model Msg
 main =
   Browser.element
     { init = init
@@ -27,8 +28,8 @@ type alias Entry = String
 
 type alias Book = 
   { name : String
-  , number : String
-  , year : String
+  , number : Int
+  , year : Int
   , month : String
   , entries : List Entry
   }
@@ -40,8 +41,8 @@ type alias Timeline =
   
 type alias Model = 
   { timeline : Timeline
-   , newBookFormField : Book
-   , newEntryFormField : { content : Entry, bookNumber : String }
+   , newBookFields : Book
+   , newEntryFields : { content : Entry, bookNumber : Int }
   } 
 
 
@@ -55,22 +56,22 @@ init _ =
 initialModel : Model
 initialModel =
  { timeline = initialTimeline
-    , newBookFormField = initialBook
-    , newEntryFormField = { content = initialEntry, bookNumber = "0" }
+    , newBookFields = initialBook
+    , newEntryFields = { content = initialEntry, bookNumber = 0 }
   }
 
 initialTimeline : Timeline
 initialTimeline =
  { bookSeriesName = "Anita Blake"
-  , books = [Book "Guilty Pleasures" "1" "0" "July" ["Nikolaos dies", "Jean-Claude becames Master of the City", "Anita receives the first and second marks"]
-  , Book "The Laughing Corpse" "2" "0" "August" []]
+  , books = [Book "Guilty Pleasures" 1 0 "July" ["Nikolaos dies", "Jean-Claude becames Master of the City", "Anita receives the first and second marks"]
+  , Book "The Laughing Corpse" 2 0 "August" []]
   }
 
 initialBook : Book
 initialBook =
   { name = ""
-  , number = "0"
-  , year = "0"
+  , number = 0
+  , year = 0
   , month = "Jan"
   , entries = []
   }
@@ -96,56 +97,59 @@ update : Msg -> Model -> (Model, Cmd Msg)
 update msg model =
   case Debug.log "msg" msg of
     NewBook ->
-      ({ model | timeline = addBook model.timeline model.newBookFormField }
+      ({ model | timeline = addBook model.timeline model.newBookFields }
       , Cmd.none
       )
 
     NewEntry ->
-     ( { model | timeline = addEntry model.newEntryFormField.bookNumber model.newEntryFormField.content model.timeline }
+     ( { model | timeline = addEntry (model.newEntryFields.bookNumber) model.newEntryFields.content model.timeline }
       , Cmd.none
       )
     
     SetBookNumber number ->
-      ({ model | newBookFormField = addBookNumber model.newBookFormField number }
+      let n = String.toInt number in
+      ({ model | newBookFields = addBookNumber model.newBookFields (Maybe.withDefault 0 n) }
       , Cmd.none
       )
 
     SetBookName name ->
-      ({ model | newBookFormField = addBookName model.newBookFormField name }
+      ({ model | newBookFields = addBookName model.newBookFields name }
       , Cmd.none
       )
 
     SetBookYear year ->
-      ({ model | newBookFormField = addBookYear model.newBookFormField year }
+      let y = String.toInt year in
+      ({ model | newBookFields = addBookYear model.newBookFields (Maybe.withDefault 0 y) }
       , Cmd.none)
 
     SetBookMonth month ->
-      ({ model | newBookFormField = addBookMonth model.newBookFormField month }
+      ({ model | newBookFields = addBookMonth model.newBookFields month }
       , Cmd.none
       )
 
     SetBookEntryContent content ->
-      ({ model | newEntryFormField = addEntryContent model.newEntryFormField content }
+      ({ model | newEntryFields = addEntryContent model.newEntryFields content }
       , Cmd.none
       )
 
     SetBookEntryNumber bookNumber ->
-      ({ model | newEntryFormField = addEntryBookNumber model.newEntryFormField bookNumber }
+      ({ model | newEntryFields = addEntryBookNumber model.newEntryFields bookNumber }
       , Cmd.none
       )
 
 
-addEntryBookNumber : { content : Entry, bookNumber : String } -> String -> { content : Entry, bookNumber : String }
+addEntryBookNumber : { content : Entry, bookNumber : Int } -> String -> { content : Entry, bookNumber : Int }
 addEntryBookNumber entry bookNumber =
-    { entry | bookNumber = bookNumber}
+    let n = String.toInt bookNumber in
+    { entry | bookNumber = Maybe.withDefault 0 n}
 
 
-addEntryContent : { content : Entry, bookNumber : String } -> String -> { content : Entry, bookNumber : String }
+addEntryContent : { content : Entry, bookNumber : Int } -> String -> { content : Entry, bookNumber : Int }
 addEntryContent entry content =
     { entry | content = content}
 
 
-addBookNumber : Book -> String -> Book
+addBookNumber : Book -> Int -> Book
 addBookNumber book number =
     { book | number = number}
 
@@ -155,7 +159,7 @@ addBookName book name =
     { book | name = name}
 
 
-addBookYear : Book -> String -> Book
+addBookYear : Book -> Int -> Book
 addBookYear book year =
     { book | year = year}
 
@@ -165,7 +169,7 @@ addBookMonth book month =
     { book | month = month}
 
 
-addEntry : String -> Entry -> Timeline -> Timeline
+addEntry : Int -> Entry -> Timeline -> Timeline
 addEntry bookNumber entry timeline =
     let findBook b = 
            if b.number == bookNumber then
@@ -254,11 +258,11 @@ viewBook books =
                     ]
                     , p [ style "text-align" "left" ]
                         [ text "—— "
-                        , text ("Number: " ++ b.number)
+                        , text ("Number: " ++ (String.fromInt b.number))
                     ]
                     , p [ style "text-align" "left" ]
                         [ text "—— "
-                        , text ("Year: " ++ b.year)
+                        , text ("Year: " ++ (String.fromInt b.year))
                     ]
                     , p [ style "text-align" "left" ]
                         [ text "—— "
