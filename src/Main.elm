@@ -26,11 +26,19 @@ main =
 
 type alias Entry = String
 
+
+type Year = Year Int
+
+type Month = Jan | Feb | Mar | Apr | May | Jun | Jul | Aug | Sep | Oct | Nov | Dec
+
+months : List String
+months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"]
+
 type alias Book = 
   { name : String
   , number : Int
-  , year : Int
-  , month : String
+  , year : Year
+  , month : Month
   , entries : List Entry
   }
 
@@ -63,16 +71,16 @@ initialModel =
 initialTimeline : Timeline
 initialTimeline =
  { bookSeriesName = "Anita Blake"
-  , books = [Book "Guilty Pleasures" 1 0 "July" ["Nikolaos dies", "Jean-Claude becames Master of the City", "Anita receives the first and second marks"]
-  , Book "The Laughing Corpse" 2 0 "August" []]
+  , books = [Book "Guilty Pleasures" 1 (Year 0) Jul ["Nikolaos dies", "Jean-Claude becames Master of the City", "Anita receives the first and second marks"]
+  , Book "The Laughing Corpse" 2 (Year 0) Aug []]
   }
 
 initialBook : Book
 initialBook =
   { name = ""
   , number = 0
-  , year = 0
-  , month = "Jan"
+  , year = Year 0
+  , month = Jan
   , entries = []
   }
 
@@ -161,12 +169,12 @@ addBookName book name =
 
 addBookYear : Book -> Int -> Book
 addBookYear book year =
-    { book | year = year}
+    { book | year = Year year}
 
 
 addBookMonth : Book -> String -> Book
 addBookMonth book month =
-    { book | month = month}
+    { book | month = getMonth month}
 
 
 addEntry : Int -> Entry -> Timeline -> Timeline
@@ -193,6 +201,53 @@ subscriptions model =
 
 
 -- VIEW
+
+
+getYear : Year -> String
+getYear year = 
+    case year of
+        Year num -> String.fromInt num
+
+
+getMonthStr : Month -> String
+getMonthStr month = 
+    case month of
+        Jan -> "Jan"
+        Feb -> "Feb"
+        Mar -> "Mar"
+        Apr -> "Apr"
+        May -> "May"
+        Jun -> "Jun"
+        Jul -> "Jul"
+        Aug -> "Aug"
+        Sep -> "Sep"
+        Oct -> "Oct"
+        Nov -> "Nov"
+        Dec -> "Dec"
+
+
+
+getMonth : String -> Month
+getMonth month = 
+    case month of
+        "Jan" -> Jan
+        "Feb" -> Feb
+        "Mar" -> Mar
+        "Apr" -> Apr
+        "May" -> May
+        "Jun" -> Jun
+        "Jul" -> Jul
+        "Aug" -> Aug
+        "Sep" -> Sep
+        "Oct" -> Oct
+        "Nov" -> Nov
+        "Dec" -> Dec
+        _ -> Debug.todo "branch '_' not implemented"
+
+
+monthToOption : String -> Html Msg
+monthToOption v =
+  option [ value v ] [ text v ]
 
 
 view : Model -> Html Msg
@@ -226,7 +281,7 @@ view model =
                     ]
                 , label []
                     [ text "Month"
-                    , input [ type_ "text", name "month" , onInput SetBookMonth  ] []
+                    , Html.select [ name "month" , onInput SetBookMonth  ] (List.map monthToOption months)
                     ]
                 , button [ onClick NewBook ] [ text "Submit" ]
                 ]
@@ -262,11 +317,11 @@ viewBook books =
                     ]
                     , p [ style "text-align" "left" ]
                         [ text "—— "
-                        , text ("Year: " ++ (String.fromInt b.year))
+                        , text ("Year: " ++ getYear b.year)
                     ]
                     , p [ style "text-align" "left" ]
                         [ text "—— "
-                        , text ("Month: " ++ b.month)
+                        , text ("Month: " ++ getMonthStr b.month)
                     ]
                     , p [ style "text-align" "left" ]
                         [ text "—— "
