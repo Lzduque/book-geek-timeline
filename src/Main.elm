@@ -88,6 +88,8 @@ initialBook =
 initialEntry : Entry
 initialEntry = ""
 
+
+
 -- UPDATE
 
 
@@ -105,7 +107,7 @@ type Msg
 update : Msg -> Model -> (Model, Cmd Msg)
 update msg model =
   case Debug.log "msg" msg of
-    NewBook ->
+    NewBook -> -- TODO: make sure that the position is not repeated
       ({ model | timeline = addBook model.timeline model.newBookFields }
       , Cmd.none
       )
@@ -180,7 +182,7 @@ addBookMonth book month =
 
 addEntry : Position -> Entry -> Timeline -> Timeline
 addEntry bookPosition entry timeline =
-    let findBook b = 
+    let findBook b =  -- TODO: make sure that the string is secure
            if b.position == bookPosition then
             { b | entries = b.entries ++ [entry]}
            else b
@@ -190,6 +192,7 @@ addEntry bookPosition entry timeline =
 addBook : Timeline -> Book -> Timeline
 addBook timeline book =
     { timeline | books = timeline.books ++ [book]}
+
 
 
 -- SUBSCRIPTIONS
