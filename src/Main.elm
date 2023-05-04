@@ -26,7 +26,6 @@ main =
 
 type alias Entry = String
 
-
 type Year = Year Int
 
 type Month = Jan | Feb | Mar | Apr | May | Jun | Jul | Aug | Sep | Oct | Nov | Dec
@@ -34,9 +33,11 @@ type Month = Jan | Feb | Mar | Apr | May | Jun | Jul | Aug | Sep | Oct | Nov | D
 months : List String
 months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"]
 
+type Position = Position Int
+
 type alias Book = 
   { name : String
-  , number : Int
+  , position : Position
   , year : Year
   , month : Month
   , entries : List Entry
@@ -50,7 +51,7 @@ type alias Timeline =
 type alias Model = 
   { timeline : Timeline
    , newBookFields : Book
-   , newEntryFields : { content : Entry, bookNumber : Int }
+   , newEntryFields : { content : Entry, bookPosition : Position }
   } 
 
 
@@ -65,20 +66,20 @@ initialModel : Model
 initialModel =
  { timeline = initialTimeline
     , newBookFields = initialBook
-    , newEntryFields = { content = initialEntry, bookNumber = 0 }
+    , newEntryFields = { content = initialEntry, bookPosition = Position 0 }
   }
 
 initialTimeline : Timeline
 initialTimeline =
  { bookSeriesName = "Anita Blake"
-  , books = [Book "Guilty Pleasures" 1 (Year 0) Jul ["Nikolaos dies", "Jean-Claude becames Master of the City", "Anita receives the first and second marks"]
-  , Book "The Laughing Corpse" 2 (Year 0) Aug []]
+  , books = [Book "Guilty Pleasures" (Position 1) (Year 0) Jul ["Nikolaos dies", "Jean-Claude becames Master of the City", "Anita receives the first and second marks"]
+  , Book "The Laughing Corpse" (Position 2) (Year 0) Aug []]
   }
 
 initialBook : Book
 initialBook =
   { name = ""
-  , number = 0
+  , position = Position 0
   , year = Year 0
   , month = Jan
   , entries = []
@@ -93,12 +94,12 @@ initialEntry = ""
 type Msg
   = NewBook
   | NewEntry
-  | SetBookNumber String
+  | SetBookPosition String
   | SetBookName String
   | SetBookYear String
   | SetBookMonth String
   | SetBookEntryContent String
-  | SetBookEntryNumber String
+  | SetBookEntryPosition String
 
 
 update : Msg -> Model -> (Model, Cmd Msg)
@@ -110,13 +111,13 @@ update msg model =
       )
 
     NewEntry ->
-     ( { model | timeline = addEntry (model.newEntryFields.bookNumber) model.newEntryFields.content model.timeline }
+     ( { model | timeline = addEntry (model.newEntryFields.bookPosition) model.newEntryFields.content model.timeline }
       , Cmd.none
       )
     
-    SetBookNumber number ->
-      let n = String.toInt number in
-      ({ model | newBookFields = addBookNumber model.newBookFields (Maybe.withDefault 0 n) }
+    SetBookPosition position ->
+      let n = String.toInt position in
+      ({ model | newBookFields = addBookPosition model.newBookFields (Position (Maybe.withDefault 0 n)) }
       , Cmd.none
       )
 
@@ -140,26 +141,26 @@ update msg model =
       , Cmd.none
       )
 
-    SetBookEntryNumber bookNumber ->
-      ({ model | newEntryFields = addEntryBookNumber model.newEntryFields bookNumber }
+    SetBookEntryPosition bookPosition ->
+      ({ model | newEntryFields = addEntryBookPosition model.newEntryFields bookPosition }
       , Cmd.none
       )
 
 
-addEntryBookNumber : { content : Entry, bookNumber : Int } -> String -> { content : Entry, bookNumber : Int }
-addEntryBookNumber entry bookNumber =
-    let n = String.toInt bookNumber in
-    { entry | bookNumber = Maybe.withDefault 0 n}
+addEntryBookPosition : { content : Entry, bookPosition : Position } -> String -> { content : Entry, bookPosition : Position }
+addEntryBookPosition entry bookPosition =
+    let n = String.toInt bookPosition in
+    { entry | bookPosition = Position (Maybe.withDefault 0 n)}
 
 
-addEntryContent : { content : Entry, bookNumber : Int } -> String -> { content : Entry, bookNumber : Int }
+addEntryContent : { content : Entry, bookPosition : Position } -> String -> { content : Entry, bookPosition : Position }
 addEntryContent entry content =
     { entry | content = content}
 
 
-addBookNumber : Book -> Int -> Book
-addBookNumber book number =
-    { book | number = number}
+addBookPosition : Book -> Position -> Book
+addBookPosition book position =
+    { book | position = position}
 
 
 addBookName : Book -> String -> Book
@@ -177,10 +178,10 @@ addBookMonth book month =
     { book | month = getMonth month}
 
 
-addEntry : Int -> Entry -> Timeline -> Timeline
-addEntry bookNumber entry timeline =
+addEntry : Position -> Entry -> Timeline -> Timeline
+addEntry bookPosition entry timeline =
     let findBook b = 
-           if b.number == bookNumber then
+           if b.position == bookPosition then
             { b | entries = b.entries ++ [entry]}
            else b
     in { timeline | books = List.map findBook timeline.books}
@@ -250,6 +251,12 @@ monthToOption v =
   option [ value v ] [ text v ]
 
 
+getPosition : Position -> String
+getPosition position = 
+    case position of
+        Position num -> String.fromInt num
+
+
 view : Model -> Html Msg
 view model =
   div []
@@ -268,8 +275,8 @@ view model =
             ]
             , div [] 
                 [ label []
-                    [ text "Number"
-                    , input [ type_ "text", name "number", onInput SetBookNumber ] []
+                    [ text "Position"
+                    , input [ type_ "text", name "position", onInput SetBookPosition ] []
                     ]
                 , label []
                     [ text "Name"
@@ -289,8 +296,8 @@ view model =
             [ text "— Add New Entry: "]
             , div [] 
                 [ label []
-                    [ text "Book Number"
-                    , input [ type_ "text", name "bookNumber", onInput SetBookEntryNumber ] []
+                    [ text "Book Position"
+                    , input [ type_ "text", name "bookPosition", onInput SetBookEntryPosition ] []
                     ]
                 , label []
                     [ text "Content"
@@ -313,7 +320,7 @@ viewBook books =
                     ]
                     , p [ style "text-align" "left" ]
                         [ text "—— "
-                        , text ("Number: " ++ (String.fromInt b.number))
+                        , text ("Position: " ++ getPosition (b.position))
                     ]
                     , p [ style "text-align" "left" ]
                         [ text "—— "
