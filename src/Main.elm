@@ -24,16 +24,20 @@ main =
 -- MODEL
 
 
-type alias Entry = String
+type alias Entry = String -- TODO: make sure that this string is secure
 
-type Year = Year Int
+type Year = Year Int -- TODO: make it into Maybe
 
-type Month = Jan | Feb | Mar | Apr | May | Jun | Jul | Aug | Sep | Oct | Nov | Dec
+type Month = Jan | Feb | Mar | Apr | May | Jun | Jul | Aug | Sep | Oct | Nov | Dec -- TODO: make it into Maybe
+
 
 months : List String
 months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"]
 
 type Position = Position Int
+
+type Error = Error String -- TODO: make sure that this string is secure
+-- TODO: make it into Maybe Error
 
 type alias Book = 
   { name : String
@@ -44,7 +48,7 @@ type alias Book =
   }
 
 type alias Timeline =
- { bookSeriesName : String
+ { bookSeriesName : String -- TODO: make sure that this string is secure
   , books : List Book
   }
   
@@ -52,6 +56,7 @@ type alias Model =
   { timeline : Timeline
    , newBookFields : Book
    , newEntryFields : { content : Entry, bookPosition : Position }
+   , errorMessage : Error
   } 
 
 
@@ -67,6 +72,7 @@ initialModel =
  { timeline = initialTimeline
     , newBookFields = initialBook
     , newEntryFields = { content = initialEntry, bookPosition = Position 0 }
+   , errorMessage = Error "" 
   }
 
 initialTimeline : Timeline
@@ -108,12 +114,18 @@ update : Msg -> Model -> (Model, Cmd Msg)
 update msg model =
   case Debug.log "msg" msg of
     NewBook -> -- TODO: make sure that the position is not repeated
-      ({ model | timeline = addBook model.timeline model.newBookFields }
-      , Cmd.none
-      )
+      if hasPositionAlready model.timeline model.newBookFields then
+       ( { model | errorMessage = Error "Position is already taken!"}
+        , Cmd.none
+        )
+      else 
+        ({ model | timeline = addBook model.timeline model.newBookFields, errorMessage = Error "" }
+        , Cmd.none
+        )
+            
 
     NewEntry ->
-     ( { model | timeline = addEntry (model.newEntryFields.bookPosition) model.newEntryFields.content model.timeline }
+     ( { model | timeline = addEntry (model.newEntryFields.bookPosition) model.newEntryFields.content model.timeline, errorMessage = Error ""  }
       , Cmd.none
       )
     
@@ -190,8 +202,22 @@ addEntry bookPosition entry timeline =
 
 
 addBook : Timeline -> Book -> Timeline
-addBook timeline book =
+addBook timeline book = -- TODO: make sure that the position is not repeated
+    -- case hasPositionAlready timeline.books book.position of
+    --     True ->
+    --             timeline -- { model | errorMessage = Error "Position is already taken!"}
+    --     False ->
     { timeline | books = timeline.books ++ [book]}
+
+
+hasPositionAlready : Timeline -> Book -> Bool
+hasPositionAlready timeline newBook=
+    let
+        books = timeline.books
+        position = newBook.position
+        isPosition b = b.position == position
+    in
+    List.length (List.filter isPosition books) > 0
 
 
 
@@ -295,6 +321,7 @@ view model =
                     ]
                 , button [ onClick NewBook ] [ text "Submit" ]
                 ]
+            , div [] [ viewError model.errorMessage]
             , p [ style "text-align" "left" ]
             [ text "— Add New Entry: "]
             , div [] 
@@ -310,6 +337,18 @@ view model =
                 ]
         ]
 
+
+viewError : Error -> Html Msg
+viewError error =
+    case error of
+        Error "" -> div [] []
+        Error _ -> p [ style "text-align" "left" ] [ text "— Error: " , text (getError error)] 
+
+
+getError : Error -> String
+getError error = 
+    case error of
+        Error x -> x
 
 
 viewBook : List Book -> Html Msg
