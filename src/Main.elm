@@ -32,7 +32,7 @@ type Month = Jan | Feb | Mar | Apr | May | Jun | Jul | Aug | Sep | Oct | Nov | D
 
 
 months : List String
-months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"]
+months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec", "None"]
 
 type Position = Position Int
 
@@ -43,7 +43,7 @@ type alias Book =
   { name : String
   , position : Position
   , year : Maybe Year
-  , month : Month
+  , month : Maybe Month
   , entries : List Entry
   }
 
@@ -78,8 +78,8 @@ initialModel =
 initialTimeline : Timeline
 initialTimeline =
  { bookSeriesName = "Anita Blake"
-  , books = [Book "Guilty Pleasures" (Position 1) (Just (Year 0)) Jul ["Nikolaos dies", "Jean-Claude becames Master of the City", "Anita receives the first and second marks"]
-  , Book "The Laughing Corpse" (Position 2) (Just (Year 0)) Aug []]
+  , books = [Book "Guilty Pleasures" (Position 1) (Just (Year 0)) (Just Jul) ["Nikolaos dies", "Jean-Claude becames Master of the City", "Anita receives the first and second marks"]
+  , Book "The Laughing Corpse" (Position 2) (Just (Year 0)) (Just Aug) []]
   }
 
 initialBook : Book
@@ -87,7 +87,7 @@ initialBook =
   { name = ""
   , position = Position 0
   , year = Just (Year 0)
-  , month = Jan
+  , month = Just Jan
   , entries = []
   }
 
@@ -240,40 +240,41 @@ getYear year =
         Nothing -> ""
 
 
-getMonthStr : Month -> String
+getMonthStr : Maybe Month -> String
 getMonthStr month = 
     case month of
-        Jan -> "Jan"
-        Feb -> "Feb"
-        Mar -> "Mar"
-        Apr -> "Apr"
-        May -> "May"
-        Jun -> "Jun"
-        Jul -> "Jul"
-        Aug -> "Aug"
-        Sep -> "Sep"
-        Oct -> "Oct"
-        Nov -> "Nov"
-        Dec -> "Dec"
+        Just Jan -> "Jan"
+        Just Feb -> "Feb"
+        Just Mar -> "Mar"
+        Just Apr -> "Apr"
+        Just May -> "May"
+        Just Jun -> "Jun"
+        Just Jul -> "Jul"
+        Just Aug -> "Aug"
+        Just Sep -> "Sep"
+        Just Oct -> "Oct"
+        Just Nov -> "Nov"
+        Just Dec -> "Dec"
+        Nothing -> "None"
 
 
 
-getMonth : String -> Month
+getMonth : String -> Maybe Month
 getMonth month = 
     case month of
-        "Jan" -> Jan
-        "Feb" -> Feb
-        "Mar" -> Mar
-        "Apr" -> Apr
-        "May" -> May
-        "Jun" -> Jun
-        "Jul" -> Jul
-        "Aug" -> Aug
-        "Sep" -> Sep
-        "Oct" -> Oct
-        "Nov" -> Nov
-        "Dec" -> Dec
-        _ -> Debug.todo "branch '_' not implemented"
+        "Jan" -> Just Jan
+        "Feb" -> Just Feb
+        "Mar" -> Just Mar
+        "Apr" -> Just Apr
+        "May" -> Just May
+        "Jun" -> Just Jun
+        "Jul" -> Just Jul
+        "Aug" -> Just Aug
+        "Sep" -> Just Sep
+        "Oct" -> Just Oct
+        "Nov" -> Just Nov
+        "Dec" -> Just Dec
+        _ -> Nothing
 
 
 monthToOption : String -> Html Msg
