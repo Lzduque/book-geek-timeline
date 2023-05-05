@@ -24,11 +24,11 @@ main =
 -- MODEL
 
 
-type alias Entry = String -- TODO: make sure that this string is secure
+type alias Entry = String
 
-type Year = Year Int -- TODO: make it into Maybe
+type Year = Year Int
 
-type Month = Jan | Feb | Mar | Apr | May | Jun | Jul | Aug | Sep | Oct | Nov | Dec -- TODO: make it into Maybe
+type Month = Jan | Feb | Mar | Apr | May | Jun | Jul | Aug | Sep | Oct | Nov | Dec
 
 
 months : List String
@@ -36,8 +36,7 @@ months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", 
 
 type Position = Position Int
 
-type Error = Error String -- TODO: make sure that this string is secure
--- TODO: make it into Maybe Error
+type Error = Error String
 
 type alias Book = 
   { name : String
@@ -48,7 +47,7 @@ type alias Book =
   }
 
 type alias Timeline =
- { bookSeriesName : String -- TODO: make sure that this string is secure
+ { bookSeriesName : String
   , books : List Book
   }
   
@@ -56,7 +55,7 @@ type alias Model =
   { timeline : Timeline
    , newBookFields : Book
    , newEntryFields : { content : Entry, bookPosition : Position }
-   , errorMessage : Error
+   , errorMessage : Maybe Error -- TODO: turn into maybe
   } 
 
 
@@ -72,7 +71,7 @@ initialModel =
  { timeline = initialTimeline
     , newBookFields = initialBook
     , newEntryFields = { content = initialEntry, bookPosition = Position 1 }
-   , errorMessage = Error "" 
+   , errorMessage = Nothing
   }
 
 initialTimeline : Timeline
@@ -113,19 +112,19 @@ type Msg
 update : Msg -> Model -> (Model, Cmd Msg)
 update msg model =
   case Debug.log "msg" msg of
-    NewBook -> -- TODO: make sure that the position is not repeated
+    NewBook ->
       if hasPositionAlready model.timeline model.newBookFields then
-       ( { model | errorMessage = Error "Position is already taken!"}
+       ( { model | errorMessage = Just (Error "Position is already taken!")}
         , Cmd.none
         )
       else 
-        ({ model | timeline = addBook model.timeline model.newBookFields } -- TODO: after sending the form the fields should be emptied again
+        ({ model | timeline = addBook model.timeline model.newBookFields, errorMessage = Nothing } -- TODO: after sending the form the fields should be emptied again
         , Cmd.none
         )
 
 
     NewEntry ->
-     ( { model | timeline = addEntry (model.newEntryFields.bookPosition) model.newEntryFields.content model.timeline, errorMessage = Error ""  } -- TODO: after sending the form the fields should be emptied again
+     ( { model | timeline = addEntry (model.newEntryFields.bookPosition) model.newEntryFields.content model.timeline, errorMessage = Nothing } -- TODO: after sending the form the fields should be emptied again
     --  TODO: it shouldn't send an empty string like entry
       , Cmd.none
       )
@@ -195,7 +194,7 @@ addBookMonth book month =
 
 addEntry : Position -> Entry -> Timeline -> Timeline
 addEntry bookPosition entry timeline =
-    let findBook b =  -- TODO: make sure that the string is secure
+    let findBook b =
            if b.position == bookPosition then
             if entry == "" then b
             else
@@ -343,17 +342,12 @@ view model =
         ]
 
 
-viewError : Error -> Html Msg
+viewError : Maybe Error -> Html Msg
 viewError error =
     case error of
-        Error "" -> div [] []
-        Error _ -> p [ style "text-align" "left" ] [ text "— Error: " , text (getError error)] 
+        Nothing -> div [] []
+        Just (Error e) -> p [ style "text-align" "left" ] [ text "— Error: " , text e] 
 
-
-getError : Error -> String
-getError error = 
-    case error of
-        Error x -> x
 
 
 viewBook : List Book -> Html Msg
