@@ -42,7 +42,7 @@ type Error = Error String -- TODO: make sure that this string is secure
 type alias Book = 
   { name : String
   , position : Position
-  , year : Year
+  , year : Maybe Year
   , month : Month
   , entries : List Entry
   }
@@ -78,15 +78,15 @@ initialModel =
 initialTimeline : Timeline
 initialTimeline =
  { bookSeriesName = "Anita Blake"
-  , books = [Book "Guilty Pleasures" (Position 1) (Year 0) Jul ["Nikolaos dies", "Jean-Claude becames Master of the City", "Anita receives the first and second marks"]
-  , Book "The Laughing Corpse" (Position 2) (Year 0) Aug []]
+  , books = [Book "Guilty Pleasures" (Position 1) (Just (Year 0)) Jul ["Nikolaos dies", "Jean-Claude becames Master of the City", "Anita receives the first and second marks"]
+  , Book "The Laughing Corpse" (Position 2) (Just (Year 0)) Aug []]
   }
 
 initialBook : Book
 initialBook =
   { name = ""
   , position = Position 0
-  , year = Year 0
+  , year = Just (Year 0)
   , month = Jan
   , entries = []
   }
@@ -184,7 +184,7 @@ addBookName book name =
 
 addBookYear : Book -> Int -> Book
 addBookYear book year =
-    { book | year = Year year}
+    { book | year = Just (Year year)}
 
 
 addBookMonth : Book -> String -> Book
@@ -233,10 +233,11 @@ subscriptions model =
 -- VIEW
 
 
-getYear : Year -> String
+getYear : Maybe Year -> String
 getYear year = 
     case year of
-        Year num -> String.fromInt num
+        Just (Year num) -> String.fromInt num
+        Nothing -> ""
 
 
 getMonthStr : Month -> String
