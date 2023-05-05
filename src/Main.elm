@@ -71,7 +71,7 @@ initialModel : Model
 initialModel =
  { timeline = initialTimeline
     , newBookFields = initialBook
-    , newEntryFields = { content = initialEntry, bookPosition = Position 0 }
+    , newEntryFields = { content = initialEntry, bookPosition = Position 1 }
    , errorMessage = Error "" 
   }
 
@@ -85,7 +85,7 @@ initialTimeline =
 initialBook : Book
 initialBook =
   { name = ""
-  , position = Position 0
+  , position = Position 1
   , year = Just (Year 0)
   , month = Just Jan
   , entries = []
@@ -119,13 +119,14 @@ update msg model =
         , Cmd.none
         )
       else 
-        ({ model | timeline = addBook model.timeline model.newBookFields, errorMessage = Error "" }
+        ({ model | timeline = addBook model.timeline model.newBookFields } -- TODO: after sending the form the fields should be emptied again
         , Cmd.none
         )
-            
+
 
     NewEntry ->
-     ( { model | timeline = addEntry (model.newEntryFields.bookPosition) model.newEntryFields.content model.timeline, errorMessage = Error ""  }
+     ( { model | timeline = addEntry (model.newEntryFields.bookPosition) model.newEntryFields.content model.timeline, errorMessage = Error ""  } -- TODO: after sending the form the fields should be emptied again
+    --  TODO: it shouldn't send an empty string like entry
       , Cmd.none
       )
     
@@ -196,6 +197,8 @@ addEntry : Position -> Entry -> Timeline -> Timeline
 addEntry bookPosition entry timeline =
     let findBook b =  -- TODO: make sure that the string is secure
            if b.position == bookPosition then
+            if entry == "" then b
+            else
             { b | entries = b.entries ++ [entry]}
            else b
     in { timeline | books = List.map findBook timeline.books}
