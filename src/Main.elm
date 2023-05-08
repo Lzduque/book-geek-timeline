@@ -301,9 +301,7 @@ view model =
                 [ text "— "
                 , text ("Books: ")
                 ]
-            , div [ style "display" "flex" 
-                , style "flex-direction" "row"
-                ] [viewTimeLine model.timeline.books] -- timeline
+            , div [] [viewTimeLine model.timeline.books] -- timeline
             , p [ style "text-align" "left" ]
                 [ text "— "
                 , text ("Add new Book: ")
@@ -354,15 +352,51 @@ viewError error =
 -- each book should be a column, but rows should be uniform size
 viewTimeLine : List Book -> Html Msg
 viewTimeLine books =
-    let 
-        bookView b =
-            div [ style "display" "grid"
-                , style "max-width" "200px"
+    div [ style "display" "flex"
+            , style "flex-direction" "column"
+            ] [ viewEntries books, viewBookInfo books ]
+            --(List.map bookView books)
+
+
+viewEntries : List Book -> Html msg
+viewEntries books =
+    div [style "display" "flex"
+            , style "flex-direction" "row"
+            ] (List.map viewEntry books)
+
+
+viewEntry : Book -> Html msg
+viewEntry book =
+    let
+        entryView e =
+            div []
+                    [ p [ style "text-align" "left" ]
+                        [ text "——— "
+                        , text e
+                    ]
+                    ]
+    in div [ style "display" "grid"
+                , style "width" "200px"
                 , style "background-color" "lightgrey"
                 , style "border" "darkgrey"
                 , style "border-style" "solid"
                 , style "border-width" "1px"
-                , style "grid-auto-rows" "minmax(30px, auto)"
+                , style "grid-auto-rows" "max(30px, auto)"
+                , style "padding" "0.5rem"
+                ] (List.map entryView book.entries)
+
+
+viewBookInfo : List Book -> Html msg
+viewBookInfo books =
+    let 
+        bookView b =
+            div [ style "display" "grid"
+                , style "width" "200px"
+                , style "background-color" "lightgrey"
+                , style "border" "darkgrey"
+                , style "border-style" "solid"
+                , style "border-width" "1px"
+                , style "grid-auto-rows" "max(30px, auto)"
                 , style "padding" "0.5rem"
                 ]
                     [ p [ style "text-align" "left" ]
@@ -377,23 +411,6 @@ viewTimeLine books =
                     , p [ style "text-align" "left" ]
                         [ text ("Month: " ++ getMonthStr b.month)
                     ]
-                    , p [ style "text-align" "left" ]
-                        [ viewEntries b.entries
-                    ]
-                    ]
-    in div [ style "display" "flex"
-            , style "flex-direction" "row"
-            ] (List.map bookView books)
-
-
-viewEntries : List Entry -> Html msg
-viewEntries entries =
-    let
-        entryView e =
-            div []
-                    [ p [ style "text-align" "left" ]
-                        [ text "——— "
-                        , text e
-                    ]
-                    ]
-    in div [] (List.map entryView entries)
+                ]
+    in div [style "display" "flex"
+            , style "flex-direction" "row"] (List.map bookView books)
