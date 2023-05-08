@@ -293,20 +293,22 @@ getPosition position =
 view : Model -> Html Msg
 view model =
   div []
-        [ p [ style "text-align" "left" ]
+        [ p [ style "text-align" "left" ] -- header
             [ text "— "
             , text ("Timeline: " ++ model.timeline.bookSeriesName)
             ]
             , p [ style "text-align" "left" ]
-            [ text "— "
-            , text ("Books: ")
-            ]
-            , viewBook model.timeline.books
+                [ text "— "
+                , text ("Books: ")
+                ]
+            , div [ style "display" "flex" 
+                , style "flex-direction" "row"
+                ] [viewTimeLine model.timeline.books] -- timeline
             , p [ style "text-align" "left" ]
-            [ text "— "
-            , text ("Add new Book: ")
-            ]
-            , div [] 
+                [ text "— "
+                , text ("Add new Book: ")
+                ] -- add new book
+            , div []  -- add new book
                 [ label []
                     [ text "Position"
                     , input [ type_ "text", name "position", onInput SetBookPosition ] []
@@ -325,10 +327,10 @@ view model =
                     ]
                 , button [ onClick NewBook ] [ text "Submit" ]
                 ]
-            , div [] [ viewError model.errorMessage]
+            , div [] [ viewError model.errorMessage] -- add new book ERROR
             , p [ style "text-align" "left" ]
-            [ text "— Add New Entry: "]
-            , div [] 
+                [ text "— Add New Entry: "] -- add new entry
+            , div []  -- add new entry
                 [ label []
                     [ text "Book Position"
                     , input [ type_ "text", name "bookPosition", onInput SetBookEntryPosition ] []
@@ -349,37 +351,39 @@ viewError error =
         Just (Error e) -> p [ style "text-align" "left" ] [ text "— Error: " , text e] 
 
 
-
-viewBook : List Book -> Html Msg
-viewBook books =
+-- each book should be a column, but rows should be uniform size
+viewTimeLine : List Book -> Html Msg
+viewTimeLine books =
     let 
         bookView b =
-            div []
+            div [ style "display" "grid"
+                , style "max-width" "200px"
+                , style "background-color" "lightgrey"
+                , style "border" "darkgrey"
+                , style "border-style" "solid"
+                , style "border-width" "1px"
+                , style "grid-auto-rows" "minmax(30px, auto)"
+                , style "padding" "0.5rem"
+                ]
                     [ p [ style "text-align" "left" ]
-                        [ text "—— "
-                        , text ("Book: " ++ b.name)
+                        [ text ("Book: " ++ b.name)
                     ]
                     , p [ style "text-align" "left" ]
-                        [ text "—— "
-                        , text ("Position: " ++ getPosition (b.position))
+                        [ text ("Position: " ++ getPosition (b.position))
                     ]
                     , p [ style "text-align" "left" ]
-                        [ text "—— "
-                        , text ("Year: " ++ getYear b.year)
+                        [ text ("Year: " ++ getYear b.year)
                     ]
                     , p [ style "text-align" "left" ]
-                        [ text "—— "
-                        , text ("Month: " ++ getMonthStr b.month)
-                    ]
-                    , p [ style "text-align" "left" ]
-                        [ text "—— "
-                        , text ("Entries: ")
+                        [ text ("Month: " ++ getMonthStr b.month)
                     ]
                     , p [ style "text-align" "left" ]
                         [ viewEntries b.entries
                     ]
                     ]
-    in div [] (List.map bookView books)
+    in div [ style "display" "flex"
+            , style "flex-direction" "row"
+            ] (List.map bookView books)
 
 
 viewEntries : List Entry -> Html msg
