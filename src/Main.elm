@@ -301,7 +301,10 @@ view model =
                 [ text "— "
                 , text ("Books: ")
                 ]
-            , div [] [viewTimeLine model.timeline.books] -- timeline
+            , div [ style "display" "flex"
+                , style "flex-direction" "row"
+                , style "align-items" "flex-end"
+                ] [viewLabels, viewTimeLine model.timeline.books] -- timeline
             , p [ style "text-align" "left" ]
                 [ text "— "
                 , text ("Add new Book: ")
@@ -342,6 +345,47 @@ view model =
         ]
 
 
+viewLabels : Html Msg
+viewLabels =
+    div [ style "display" "flex"
+            , style "flex-direction" "column"
+            ] [div 
+                [ style "display" "grid"
+                , style "width" "auto"
+                , style "background-color" "lightgrey"
+                , style "border" "darkgrey"
+                , style "border-style" "solid"
+                , style "border-width" "1px"
+                , style "grid-auto-rows" "max(30px, auto)"
+                , style "padding" "0.5rem"
+                ]
+                [ p [ style "text-align" "center"
+                    , style "align-items" "stretch"
+                    ]
+                    [ text "Entries" ]
+                ]
+                , div 
+                [ style "display" "grid"
+                , style "width" "auto"
+                , style "background-color" "lightgrey"
+                , style "border" "darkgrey"
+                , style "border-style" "solid"
+                , style "border-width" "1px"
+                , style "grid-auto-rows" "max(30px, auto)"
+                , style "padding" "0.5rem"
+                ]
+                [ p [ style "text-align" "center" ]
+                    [ text "Book" ]
+                , p [ style "text-align" "center" ]
+                    [ text "Position" ]
+                , p [ style "text-align" "center" ]
+                    [ text "Year" ]
+                , p [ style "text-align" "center" ]
+                    [ text "Month" ]
+                ]
+            ]
+
+
 viewError : Maybe Error -> Html Msg
 viewError error =
     case error of
@@ -355,7 +399,6 @@ viewTimeLine books =
     div [ style "display" "flex"
             , style "flex-direction" "column"
             ] [ viewEntries books, viewBookInfo books ]
-            --(List.map bookView books)
 
 
 viewEntries : List Book -> Html msg
@@ -370,10 +413,7 @@ viewEntry book =
     let
         entryView e =
             div []
-                    [ p [ style "text-align" "left" ]
-                        [ text "——— "
-                        , text e
-                    ]
+                    [ p [ style "text-align" "left" ] [ text e ]
                     ]
     in div [ style "display" "grid"
                 , style "width" "200px"
@@ -399,18 +439,14 @@ viewBookInfo books =
                 , style "grid-auto-rows" "max(30px, auto)"
                 , style "padding" "0.5rem"
                 ]
-                    [ p [ style "text-align" "left" ]
-                        [ text ("Book: " ++ b.name)
-                    ]
-                    , p [ style "text-align" "left" ]
-                        [ text ("Position: " ++ getPosition (b.position))
-                    ]
-                    , p [ style "text-align" "left" ]
-                        [ text ("Year: " ++ getYear b.year)
-                    ]
-                    , p [ style "text-align" "left" ]
-                        [ text ("Month: " ++ getMonthStr b.month)
-                    ]
-                ]
+                [ p [ style "text-align" "center" ]
+                    [ text b.name ]
+                , p [ style "text-align" "center" ]
+                    [ text (getPosition b.position)]
+                , p [ style "text-align" "center" ]
+                    [ text (getYear b.year) ]
+                , p [ style "text-align" "center" ]
+                    [ text (getMonthStr b.month)]
+            ]
     in div [style "display" "flex"
             , style "flex-direction" "row"] (List.map bookView books)
