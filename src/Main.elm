@@ -352,38 +352,46 @@ viewLabels =
             ,  style "display" "flex"
             , style "flex-direction" "column"
             ] [ div [ style "background-color" "lightgrey"
-                , style "border" "black"
-                , style "border-style" "solid"
-                , style "border-width" "1px"
-                , style "grid-auto-rows" "max(30px, auto)"
-                ]
-                [ p [ style "text-align" "center"
-                    , style "align-items" "stretch"
-                    ]
-                    [ text "Entries" ]
-                ]
+                        , style "border" "black"
+                        , style "border-style" "solid"
+                        , style "border-width" "1px"
+                        , style "grid-auto-rows" "max(50px, auto)"
+                        , style "width" "100px"
+                        , style "display" "flex"
+                        , style "flex-direction" "column-reverse"
+                        ]
+                        [ p [ style "height" "50px"
+                                , style "border-bottom" "solid"
+                                , style "margin" "0px"
+                                , style "padding" "10px"
+                                ]
+                            [ text "Entries" ]
+                        ]
                 , div [ style "background-color" "lightgrey"
                         , style "border" "black"
                         , style "border-style" "solid"
                         , style "border-width" "1px"
+                        , style "width" "100px"
+                        , style "display" "flex"
+                        , style "flex-direction" "column"
                         ]
-                            [ p [ style "height" "30px"
+                            [ p [ style "height" "50px"
                                 , style "border-top" "solid"
                                 , style "margin" "0px"
                                 , style "padding" "10px"
                                 ]
                                 [ text "Book" ]
-                        , p [ style "height" "30px"
+                        , p [ style "height" "50px"
                                 , style "border-top" "solid"
                                 , style "margin" "0px"
                                 , style "padding" "10px"
                                 ] [ text "Position" ]
-                        , p [ style "height" "30px"
+                        , p [ style "height" "50px"
                                 , style "border-top" "solid"
                                 , style "margin" "0px"
                                 , style "padding" "10px"
                                 ] [ text "Year" ]
-                        , p [ style "height" "30px"
+                        , p [ style "height" "50px"
                                 , style "border-top" "solid"
                                 , style "margin" "0px"
                                 , style "padding" "10px"
@@ -413,6 +421,7 @@ viewEntries books =
     div [ class "entries"
             , style "display" "flex"
             , style "flex-direction" "row"
+            , style "align-items" "stretch"
             ] (List.map viewEntry books)
 
 
@@ -421,7 +430,7 @@ viewEntry book =
     let
         entryView e =
             div []
-                    [ p [ style "height" "30px"
+                    [ p [ style "height" "50px"
                                 , style "border-bottom" "solid"
                                 , style "margin" "0px"
                                 , style "padding" "10px"
@@ -432,6 +441,8 @@ viewEntry book =
                 , style "border-style" "solid"
                 , style "border-width" "1px"
                 , style "width" "200px"
+                , style "display" "flex"
+                , style "flex-direction" "column-reverse"
             ] (List.map entryView book.entries)
 
 
@@ -444,23 +455,28 @@ viewBookInfo books =
                 , style "border-style" "solid"
                 , style "border-width" "1px"
                 , style "width" "200px"
+                , style "display" "flex"
+                , style "flex-direction" "column"
+                , style "text-align" "center"
+                , style "justify-content" "center"
+                , style "align-items" "stretch"
                 ]
-                [ p [ style "height" "30px"
+                [ p [ style "height" "50px"
                                 , style "border-top" "solid"
                                 , style "margin" "0px"
                                 , style "padding" "10px"
                                 ] [ text b.name ]
-                , p [ style "height" "30px"
+                , p [ style "height" "50px"
                                 , style "border-top" "solid"
                                 , style "margin" "0px"
                                 , style "padding" "10px"
                                 ] [ text (getPosition b.position)]
-                , p [ style "height" "30px"
+                , p [ style "height" "50px"
                                 , style "border-top" "solid"
                                 , style "margin" "0px"
                                 , style "padding" "10px"
                                 ] [ text (getYear b.year) ]
-                , p [ style "height" "30px"
+                , p [ style "height" "50px"
                                 , style "border-top" "solid"
                                 , style "margin" "0px"
                                 , style "padding" "10px"
