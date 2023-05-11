@@ -368,7 +368,7 @@ viewLabels =
                                 ]
                             [ text "Entries" ]
                         ]
-                , div [ class "labelsBookInfo"
+                , div [ class "labels-book-info"
                         , style "background-color" "lightgrey"
                         , style "border" "black"
                         , style "border-style" "solid"
@@ -381,22 +381,26 @@ viewLabels =
                                 , style "border-top" "solid"
                                 , style "margin" "0px"
                                 , style "padding" "10px"
+                                , style "background-color" "plum"
                                 ]
                                 [ text "Book" ]
                         , p [ style "height" "50px"
                                 , style "border-top" "solid"
                                 , style "margin" "0px"
                                 , style "padding" "10px"
+                                , style "background-color" "pink"
                                 ] [ text "Position" ]
                         , p [ style "height" "50px"
                                 , style "border-top" "solid"
                                 , style "margin" "0px"
                                 , style "padding" "10px"
+                                , style "background-color" "lightskyblue"
                                 ] [ text "Year" ]
                         , p [ style "height" "50px"
                                 , style "border-top" "solid"
                                 , style "margin" "0px"
                                 , style "padding" "10px"
+                                , style "background-color" "lightgoldenrodyellow"
                                 ] [ text "Month" ]
                         ]
             ]
@@ -470,21 +474,25 @@ viewBookInfo books =
                             , style "border-top" "solid"
                             , style "margin" "0px"
                             , style "padding" "10px"
+                            , style "background-color" "plum"
                             ] [ text b.name ]
                     , p [ style "height" "50px"
                             , style "border-top" "solid"
                             , style "margin" "0px"
                             , style "padding" "10px"
+                            , style "background-color" "pink"
                             ] [ text (getPosition b.position)]
                     , p [ style "height" "50px"
                             , style "border-top" "solid"
                             , style "margin" "0px"
                             , style "padding" "10px"
+                            , style "background-color" "lightskyblue"
                             ] [ text (getYear b.year) ]
                     , p [ style "height" "50px"
                             , style "border-top" "solid"
                             , style "margin" "0px"
                             , style "padding" "10px"
+                            , style "background-color" "lightgoldenrodyellow"
                             ] [ text (getMonthStr b.month)]
             ]
     in div [ class "books-infos"
