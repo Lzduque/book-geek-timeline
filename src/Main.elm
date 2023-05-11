@@ -347,46 +347,42 @@ view model =
 
 viewLabels : Html Msg
 viewLabels =
-    ol [ style "display" "flex"
+    div [ style "display" "flex"
             , style "flex-direction" "column"
-            , style "margin" "0px"
-            , style "padding" "0px"
-        ] [ li 
-            [ style "display" "grid"
-            , style "width" "auto"
-            , style "background-color" "lightgrey"
-            , style "border" "black"
-            , style "border-style" "solid"
-            , style "border-width" "1px"
-            , style "grid-auto-rows" "max(30px, auto)"
-            , style "padding" "0.5rem"
-            , style "list-style" "none"
-            ]
-            [ p [ style "text-align" "center"
-                , style "align-items" "stretch"
+            ] [div 
+                [ style "display" "grid"
+                , style "width" "auto"
+                , style "background-color" "lightgrey"
+                , style "border" "black"
+                , style "border-style" "solid"
+                , style "border-width" "1px"
+                , style "grid-auto-rows" "max(30px, auto)"
+                , style "padding" "0.5rem"
                 ]
-                [ text "Entries" ]
-            ]
-        , li 
-            [ style "display" "grid"
-            , style "width" "auto"
-            , style "background-color" "lightgrey"
-            , style "border" "black"
-            , style "border-style" "solid"
-            , style "border-width" "1px"
-            , style "grid-auto-rows" "max(30px, auto)"
-            , style "padding" "0.5rem"
-            , style "list-style" "none"
-            ]
-            [ p [ style "text-align" "center" ]
-                [ text "Book" ]
-            , p [ style "text-align" "center" ]
-                [ text "Position" ]
-            , p [ style "text-align" "center" ]
-                [ text "Year" ]
-            , p [ style "text-align" "center" ]
-                [ text "Month" ]
-            ]
+                [ p [ style "text-align" "center"
+                    , style "align-items" "stretch"
+                    ]
+                    [ text "Entries" ]
+                ]
+                , div 
+                [ style "display" "grid"
+                , style "width" "auto"
+                , style "background-color" "lightgrey"
+                , style "border" "black"
+                , style "border-style" "solid"
+                , style "border-width" "1px"
+                , style "grid-auto-rows" "max(30px, auto)"
+                , style "padding" "0.5rem"
+                ]
+                [ p [ style "text-align" "center" ]
+                    [ text "Book" ]
+                , p [ style "text-align" "center" ]
+                    [ text "Position" ]
+                , p [ style "text-align" "center" ]
+                    [ text "Year" ]
+                , p [ style "text-align" "center" ]
+                    [ text "Month" ]
+                ]
             ]
 
 
@@ -400,18 +396,15 @@ viewError error =
 -- each book should be a column, but rows should be uniform size
 viewTimeLine : List Book -> Html Msg
 viewTimeLine books =
-    ol [ style "display" "flex"
+    div [ style "display" "flex"
             , style "flex-direction" "column"
-            , style "margin" "0px"
-            , style "padding" "0px"
-        ] [ viewEntries books, viewBookInfo books ]
+            ] [ viewEntries books, viewBookInfo books ]
 
 
 viewEntries : List Book -> Html msg
 viewEntries books =
-    li [style "display" "flex"
+    div [style "display" "flex"
             , style "flex-direction" "row"
-            , style "list-style" "none"
             ] (List.map viewEntry books)
 
 
@@ -455,7 +448,5 @@ viewBookInfo books =
                 , p [ style "text-align" "center" ]
                     [ text (getMonthStr b.month)]
             ]
-    in li [style "display" "flex"
-            , style "flex-direction" "row"
-            , style "list-style" "none"
-            ] (List.map bookView books)
+    in div [style "display" "flex"
+            , style "flex-direction" "row"] (List.map bookView books)
