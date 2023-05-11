@@ -301,7 +301,8 @@ view model =
                 [ text "— "
                 , text ("Books: ")
                 ]
-            , div [ style "display" "flex"
+            , div [ class "timeline"
+                , style "display" "flex"
                 , style "flex-direction" "row"
                 , style "align-items" "flex-end"
                 ] [viewLabels, viewTimeLine model.timeline.books] -- timeline
@@ -347,39 +348,46 @@ view model =
 
 viewLabels : Html Msg
 viewLabels =
-    div [ style "display" "flex"
+    div [ class "labels"
+            ,  style "display" "flex"
             , style "flex-direction" "column"
-            ] [ div [ style "display" "grid"
-                , style "width" "auto"
-                , style "background-color" "lightgrey"
+            ] [ div [ style "background-color" "lightgrey"
                 , style "border" "black"
                 , style "border-style" "solid"
                 , style "border-width" "1px"
                 , style "grid-auto-rows" "max(30px, auto)"
-                , style "padding" "0.5rem"
                 ]
                 [ p [ style "text-align" "center"
                     , style "align-items" "stretch"
                     ]
                     [ text "Entries" ]
                 ]
-                , div [ style "display" "grid"
-                        , style "width" "auto"
-                        , style "background-color" "lightgrey"
+                , div [ style "background-color" "lightgrey"
                         , style "border" "black"
                         , style "border-style" "solid"
                         , style "border-width" "1px"
-                        , style "grid-auto-rows" "max(30px, auto)"
-                        , style "padding" "0.5rem"
                         ]
-                        [ p [ style "text-align" "center" ]
-                            [ text "Book" ]
-                        , p [ style "text-align" "center" ]
-                            [ text "Position" ]
-                        , p [ style "text-align" "center" ]
-                            [ text "Year" ]
-                        , p [ style "text-align" "center" ]
-                            [ text "Month" ]
+                            [ p [ style "height" "30px"
+                                , style "border-top" "solid"
+                                , style "margin" "0px"
+                                , style "padding" "10px"
+                                ]
+                                [ text "Book" ]
+                        , p [ style "height" "30px"
+                                , style "border-top" "solid"
+                                , style "margin" "0px"
+                                , style "padding" "10px"
+                                ] [ text "Position" ]
+                        , p [ style "height" "30px"
+                                , style "border-top" "solid"
+                                , style "margin" "0px"
+                                , style "padding" "10px"
+                                ] [ text "Year" ]
+                        , p [ style "height" "30px"
+                                , style "border-top" "solid"
+                                , style "margin" "0px"
+                                , style "padding" "10px"
+                                ] [ text "Month" ]
                         ]
             ]
 
@@ -394,14 +402,16 @@ viewError error =
 -- each book should be a column, but rows should be uniform size
 viewTimeLine : List Book -> Html Msg
 viewTimeLine books =
-    div [ style "display" "flex"
+    div [  class "books"
+            , style "display" "flex"
             , style "flex-direction" "column"
             ] [ viewEntries books, viewBookInfo books ]
 
 
 viewEntries : List Book -> Html msg
 viewEntries books =
-    div [style "display" "flex"
+    div [ class "entries"
+            , style "display" "flex"
             , style "flex-direction" "row"
             ] (List.map viewEntry books)
 
@@ -411,40 +421,51 @@ viewEntry book =
     let
         entryView e =
             div []
-                    [ p [ style "text-align" "left" ] [ text e ]
+                    [ p [ style "height" "30px"
+                                , style "border-bottom" "solid"
+                                , style "margin" "0px"
+                                , style "padding" "10px"
+                                ] [ text e ]
                     ]
-    in div [ style "display" "grid"
-                , style "width" "200px"
-                , style "background-color" "lightgrey"
+    in div [ style "background-color" "lightgrey"
                 , style "border" "black"
                 , style "border-style" "solid"
                 , style "border-width" "1px"
-                , style "grid-auto-rows" "max(30px, auto)"
-                , style "padding" "0.5rem"
-                ] (List.map entryView book.entries)
+                , style "width" "200px"
+            ] (List.map entryView book.entries)
 
 
 viewBookInfo : List Book -> Html msg
 viewBookInfo books =
     let 
         bookView b =
-            div [ style "display" "grid"
-                , style "width" "200px"
-                , style "background-color" "lightgrey"
+            div [ style "background-color" "lightgrey"
                 , style "border" "black"
                 , style "border-style" "solid"
                 , style "border-width" "1px"
-                , style "grid-auto-rows" "max(30px, auto)"
-                , style "padding" "0.5rem"
+                , style "width" "200px"
                 ]
-                [ p [ style "text-align" "center" ]
-                    [ text b.name ]
-                , p [ style "text-align" "center" ]
-                    [ text (getPosition b.position)]
-                , p [ style "text-align" "center" ]
-                    [ text (getYear b.year) ]
-                , p [ style "text-align" "center" ]
-                    [ text (getMonthStr b.month)]
+                [ p [ style "height" "30px"
+                                , style "border-top" "solid"
+                                , style "margin" "0px"
+                                , style "padding" "10px"
+                                ] [ text b.name ]
+                , p [ style "height" "30px"
+                                , style "border-top" "solid"
+                                , style "margin" "0px"
+                                , style "padding" "10px"
+                                ] [ text (getPosition b.position)]
+                , p [ style "height" "30px"
+                                , style "border-top" "solid"
+                                , style "margin" "0px"
+                                , style "padding" "10px"
+                                ] [ text (getYear b.year) ]
+                , p [ style "height" "30px"
+                                , style "border-top" "solid"
+                                , style "margin" "0px"
+                                , style "padding" "10px"
+                                ] [ text (getMonthStr b.month)]
             ]
-    in div [style "display" "flex"
+    in div [ class "bookInfo"
+            , style "display" "flex"
             , style "flex-direction" "row"] (List.map bookView books)
