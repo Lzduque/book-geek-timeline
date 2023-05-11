@@ -349,8 +349,7 @@ viewLabels : Html Msg
 viewLabels =
     div [ style "display" "flex"
             , style "flex-direction" "column"
-            ] [div 
-                [ style "display" "grid"
+            ] [ div [ style "display" "grid"
                 , style "width" "auto"
                 , style "background-color" "lightgrey"
                 , style "border" "black"
@@ -364,25 +363,24 @@ viewLabels =
                     ]
                     [ text "Entries" ]
                 ]
-                , div 
-                [ style "display" "grid"
-                , style "width" "auto"
-                , style "background-color" "lightgrey"
-                , style "border" "black"
-                , style "border-style" "solid"
-                , style "border-width" "1px"
-                , style "grid-auto-rows" "max(30px, auto)"
-                , style "padding" "0.5rem"
-                ]
-                [ p [ style "text-align" "center" ]
-                    [ text "Book" ]
-                , p [ style "text-align" "center" ]
-                    [ text "Position" ]
-                , p [ style "text-align" "center" ]
-                    [ text "Year" ]
-                , p [ style "text-align" "center" ]
-                    [ text "Month" ]
-                ]
+                , div [ style "display" "grid"
+                        , style "width" "auto"
+                        , style "background-color" "lightgrey"
+                        , style "border" "black"
+                        , style "border-style" "solid"
+                        , style "border-width" "1px"
+                        , style "grid-auto-rows" "max(30px, auto)"
+                        , style "padding" "0.5rem"
+                        ]
+                        [ p [ style "text-align" "center" ]
+                            [ text "Book" ]
+                        , p [ style "text-align" "center" ]
+                            [ text "Position" ]
+                        , p [ style "text-align" "center" ]
+                            [ text "Year" ]
+                        , p [ style "text-align" "center" ]
+                            [ text "Month" ]
+                        ]
             ]
 
 
