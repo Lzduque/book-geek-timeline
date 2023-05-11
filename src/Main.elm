@@ -351,7 +351,8 @@ viewLabels =
     div [ class "labels"
             ,  style "display" "flex"
             , style "flex-direction" "column"
-            ] [ div [ style "background-color" "lightgrey"
+            ] [ div [ class "entries"
+                        , style "background-color" "lightgrey"
                         , style "border" "black"
                         , style "border-style" "solid"
                         , style "border-width" "1px"
@@ -367,7 +368,8 @@ viewLabels =
                                 ]
                             [ text "Entries" ]
                         ]
-                , div [ style "background-color" "lightgrey"
+                , div [ class "labelsBookInfo"
+                        , style "background-color" "lightgrey"
                         , style "border" "black"
                         , style "border-style" "solid"
                         , style "border-width" "1px"
@@ -418,7 +420,7 @@ viewTimeLine books =
 
 viewEntries : List Book -> Html msg
 viewEntries books =
-    div [ class "entries"
+    div [ class "books-entries"
             , style "display" "flex"
             , style "flex-direction" "row"
             , style "align-items" "stretch"
@@ -430,13 +432,15 @@ viewEntry book =
     let
         entryView e =
             div []
-                    [ p [ style "height" "50px"
-                                , style "border-bottom" "solid"
-                                , style "margin" "0px"
-                                , style "padding" "10px"
-                                ] [ text e ]
+                    [ p [  class "entry"
+                            , style "height" "50px"
+                            , style "border-bottom" "solid"
+                            , style "margin" "0px"
+                            , style "padding" "10px"
+                            ] [ text e ]
                     ]
-    in div [ style "background-color" "lightgrey"
+    in div [ class "entries"
+                , style "background-color" "lightgrey"
                 , style "border" "black"
                 , style "border-style" "solid"
                 , style "border-width" "1px"
@@ -450,38 +454,39 @@ viewBookInfo : List Book -> Html msg
 viewBookInfo books =
     let 
         bookView b =
-            div [ style "background-color" "lightgrey"
-                , style "border" "black"
-                , style "border-style" "solid"
-                , style "border-width" "1px"
-                , style "width" "200px"
-                , style "display" "flex"
-                , style "flex-direction" "column"
-                , style "text-align" "center"
-                , style "justify-content" "center"
-                , style "align-items" "stretch"
-                ]
-                [ p [ style "height" "50px"
-                                , style "border-top" "solid"
-                                , style "margin" "0px"
-                                , style "padding" "10px"
-                                ] [ text b.name ]
-                , p [ style "height" "50px"
-                                , style "border-top" "solid"
-                                , style "margin" "0px"
-                                , style "padding" "10px"
-                                ] [ text (getPosition b.position)]
-                , p [ style "height" "50px"
-                                , style "border-top" "solid"
-                                , style "margin" "0px"
-                                , style "padding" "10px"
-                                ] [ text (getYear b.year) ]
-                , p [ style "height" "50px"
-                                , style "border-top" "solid"
-                                , style "margin" "0px"
-                                , style "padding" "10px"
-                                ] [ text (getMonthStr b.month)]
+            div [ class "book-info"
+                    , style "background-color" "lightgrey"
+                    , style "border" "black"
+                    , style "border-style" "solid"
+                    , style "border-width" "1px"
+                    , style "width" "200px"
+                    , style "display" "flex"
+                    , style "flex-direction" "column"
+                    , style "text-align" "center"
+                    , style "justify-content" "center"
+                    , style "align-items" "stretch"
+                    ]
+                    [ p [ style "height" "50px"
+                            , style "border-top" "solid"
+                            , style "margin" "0px"
+                            , style "padding" "10px"
+                            ] [ text b.name ]
+                    , p [ style "height" "50px"
+                            , style "border-top" "solid"
+                            , style "margin" "0px"
+                            , style "padding" "10px"
+                            ] [ text (getPosition b.position)]
+                    , p [ style "height" "50px"
+                            , style "border-top" "solid"
+                            , style "margin" "0px"
+                            , style "padding" "10px"
+                            ] [ text (getYear b.year) ]
+                    , p [ style "height" "50px"
+                            , style "border-top" "solid"
+                            , style "margin" "0px"
+                            , style "padding" "10px"
+                            ] [ text (getMonthStr b.month)]
             ]
-    in div [ class "bookInfo"
-            , style "display" "flex"
-            , style "flex-direction" "row"] (List.map bookView books)
+    in div [ class "books-infos"
+                , style "display" "flex"
+                , style "flex-direction" "row"] (List.map bookView books)
