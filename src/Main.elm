@@ -362,9 +362,12 @@ viewLabels =
                             , style "border-bottom" "solid"
                             , style "border-right" "solid"
                             , style "border-width" "0.5px"
-                                , style "margin" "0px"
-                                , style "padding" "10px"
-                                ]
+                            , style "margin" "0px"
+                            , style "padding" "10px"
+                            , style "display" "flex"
+                            , style "justify-content" "flex-start"
+                            , style "align-items" "center"
+                            ]
                             [ text "Entries" ]
                         ]
                 , div [ class "labels-book-info"
@@ -381,6 +384,9 @@ viewLabels =
                                 , style "margin" "0px"
                                 , style "padding" "10px"
                                 , style "background-color" "plum"
+                                , style "display" "flex"
+                                , style "justify-content" "flex-start"
+                                , style "align-items" "center"
                                 ]
                                 [ text "Book" ]
                         , p [ style "height" "50px"
@@ -391,6 +397,9 @@ viewLabels =
                                 , style "margin" "0px"
                                 , style "padding" "10px"
                                 , style "background-color" "pink"
+                                , style "display" "flex"
+                                , style "justify-content" "flex-start"
+                                , style "align-items" "center"
                                 ] [ text "Position" ]
                         , p [ style "height" "50px"
                                 -- , style "border" "solid"
@@ -400,6 +409,9 @@ viewLabels =
                                 , style "margin" "0px"
                                 , style "padding" "10px"
                                 , style "background-color" "lightskyblue"
+                                , style "display" "flex"
+                                , style "justify-content" "flex-start"
+                                , style "align-items" "center"
                                 ] [ text "Year" ]
                         , p [ style "height" "50px"
                                 -- , style "border" "solid"
@@ -409,6 +421,9 @@ viewLabels =
                                 , style "margin" "0px"
                                 , style "padding" "10px"
                                 , style "background-color" "lightgoldenrodyellow"
+                                , style "display" "flex"
+                                , style "justify-content" "flex-start"
+                                , style "align-items" "center"
                                 ] [ text "Month" ]
                         ]
             ]
