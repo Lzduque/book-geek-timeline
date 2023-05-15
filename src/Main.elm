@@ -24,7 +24,12 @@ main =
 -- MODEL
 
 
-type alias Entry = String
+type alias Entry = 
+    { content : String
+    , bookPosition : Position
+    , year : Maybe Year
+    , month : Maybe Month
+    }
 
 type Year = Year Int
 
@@ -43,18 +48,18 @@ type alias Book =
   , position : Position
   , year : Maybe Year
   , month : Maybe Month
-  , entries : List Entry
   }
 
 type alias Timeline =
  { bookSeriesName : String
   , books : List Book
+  , entries : List Entry
   }
   
 type alias Model = 
   { timeline : Timeline
    , newBookFields : Book
-   , newEntryFields : { content : Entry, bookPosition : Position }
+   , newEntryFields : Entry
    , errorMessage : Maybe Error -- TODO: turn into maybe
   } 
 
@@ -70,15 +75,17 @@ initialModel : Model
 initialModel =
  { timeline = initialTimeline
     , newBookFields = initialBook
-    , newEntryFields = { content = initialEntry, bookPosition = Position 1 }
+    , newEntryFields = initialEntry
    , errorMessage = Nothing
   }
 
 initialTimeline : Timeline
 initialTimeline =
  { bookSeriesName = "Anita Blake"
-  , books = [Book "Guilty Pleasures" (Position 1) (Just (Year 0)) (Just Jul) ["Nikolaos dies", "Jean-Claude becames Master of the City", "Anita receives the first and second marks"]
-  , Book "The Laughing Corpse" (Position 2) (Just (Year 0)) (Just Aug) []]
+  , books = [ Book "Guilty Pleasures" (Position 1) (Just (Year 0)) (Just Jul)
+                , Book "The Laughing Corpse" (Position 2) (Just (Year 0)) (Just Aug)
+                ]
+    , entries = initialEntries
   }
 
 initialBook : Book
@@ -87,12 +94,39 @@ initialBook =
   , position = Position 1
   , year = Just (Year 0)
   , month = Just Jan
-  , entries = []
   }
 
-initialEntry : Entry
-initialEntry = ""
 
+initialEntry : Entry
+initialEntry = { content = ""
+                        ,  bookPosition = Position 1
+                        , year = Nothing
+                        , month = Nothing
+                    }
+
+
+initialEntries : List Entry
+initialEntries = [ { content = "Nikolaos dies"
+                        ,  bookPosition = Position 1
+                        , year = Just (Year 0)
+                        , month = Just Jul
+                    }
+                    , { content = "Jean-Claude becames Master of the City"
+                        ,  bookPosition = Position 1
+                        , year = Just (Year 0)
+                        , month = Just Jul
+                    }
+                    , { content = "Anita receives the first and second marks"
+                        ,  bookPosition = Position 1
+                        , year = Just (Year 0)
+                        , month = Just Jul
+                    }
+                    , { content = "Anita meets vaudun priests Dominga Salvador"
+                        ,  bookPosition = Position 2
+                        , year = Just (Year 0)
+                        , month = Just Jul
+                    }
+                    ]
 
 
 -- UPDATE
@@ -124,7 +158,7 @@ update msg model =
 
 
     NewEntry ->
-     ( { model | timeline = addEntry (model.newEntryFields.bookPosition) model.newEntryFields.content model.timeline, errorMessage = Nothing } -- TODO: after sending the form the fields should be emptied again
+     ( { model | timeline = addEntry model.newEntryFields model.timeline, errorMessage = Nothing } -- TODO: after sending the form the fields should be emptied again
     --  TODO: it shouldn't send an empty string like entry
       , Cmd.none
       )
@@ -161,13 +195,13 @@ update msg model =
       )
 
 
-addEntryBookPosition : { content : Entry, bookPosition : Position } -> String -> { content : Entry, bookPosition : Position }
+addEntryBookPosition : Entry -> String -> Entry
 addEntryBookPosition entry bookPosition =
     let n = String.toInt bookPosition in
     { entry | bookPosition = Position (Maybe.withDefault 0 n)}
 
 
-addEntryContent : { content : Entry, bookPosition : Position } -> String -> { content : Entry, bookPosition : Position }
+addEntryContent : Entry -> String -> Entry
 addEntryContent entry content =
     { entry | content = content}
 
@@ -192,15 +226,12 @@ addBookMonth book month =
     { book | month = getMonth month}
 
 
-addEntry : Position -> Entry -> Timeline -> Timeline
-addEntry bookPosition entry timeline =
-    let findBook b =
-           if b.position == bookPosition then
-            if entry == "" then b
-            else
-            { b | entries = b.entries ++ [entry]}
-           else b
-    in { timeline | books = List.map findBook timeline.books}
+addEntry : Entry -> Timeline -> Timeline
+addEntry entry timeline =
+    if List.any (\b -> b.position == entry.bookPosition) timeline.books then
+    { timeline | entries = timeline.entries ++ [entry] }
+    else timeline
+
 
 
 addBook : Timeline -> Book -> Timeline
@@ -290,6 +321,12 @@ getPosition position =
         Position num -> String.fromInt num
 
 
+getPositionNum : Position -> Int
+getPositionNum position = 
+    case position of
+        Position num -> num
+
+
 view : Model -> Html Msg
 view model =
   div []
@@ -305,7 +342,7 @@ view model =
                 , style "display" "flex"
                 , style "flex-direction" "row"
                 , style "align-items" "flex-end"
-                ] [viewLabels, viewTimeLine model.timeline.books] -- timeline
+                ] [viewLabels, viewTimeLine model.timeline] -- timeline
             , p [ style "text-align" "left" ]
                 [ text "— "
                 , text ("Add new Book: ")
@@ -437,25 +474,37 @@ viewError error =
 
 
 -- each book should be a column, but rows should be uniform size
-viewTimeLine : List Book -> Html Msg
-viewTimeLine books =
+viewTimeLine : Timeline -> Html Msg
+viewTimeLine timeline =
     div [  class "books"
             , style "display" "flex"
             , style "flex-direction" "column"
-            ] [ viewEntries books, viewBookInfo books ]
+            ] [ viewEntries timeline.entries, viewBookInfo timeline.books ]
 
 
-viewEntries : List Book -> Html msg
-viewEntries books =
+groupByPosition : List Entry -> List (List Entry)
+groupByPosition entries =
+    -- let
+    --     byPosition acc cur = 
+    --         if cur.bookPosition == (Maybe.withDefault [] (List.tail acc)).bookPosition 
+    --         then acc ++ [cur] 
+    --         else acc
+    -- in 
+    List.foldl byPosition [] entries
+
+byPosition : List Entry -> Entry -> List Entry
+
+viewEntries : List Entry -> Html msg
+viewEntries entries =
     div [ class "books-entries"
             , style "display" "flex"
             , style "flex-direction" "row"
             , style "align-items" "stretch"
-            ] (List.map viewEntry books)
+            ] (List.map viewEntry (groupByPosition (List.sortWith (\e f -> compare (getPositionNum(e.bookPosition)) (getPositionNum(f.bookPosition))) entries))) -- sorted and grouped now by the book position, not year
 
 
-viewEntry : Book -> Html msg
-viewEntry book =
+viewEntry : List Entry -> Html msg
+viewEntry group =
     let
         entryView e =
             div []
@@ -470,7 +519,7 @@ viewEntry book =
                             , style "display" "flex"
                             , style "justify-content" "flex-start"
                             , style "align-items" "center"
-                            ] [ text e ]
+                            ] [ text e.content ]
                     ]
     in div [ class "entries"
                 , style "background-color" "lightgrey"
@@ -480,7 +529,7 @@ viewEntry book =
                 , style "width" "200px"
                 , style "display" "flex"
                 , style "flex-direction" "column-reverse"
-            ] (List.map entryView book.entries)
+            ] (List.map entryView group)
 
 
 viewBookInfo : List Book -> Html msg
