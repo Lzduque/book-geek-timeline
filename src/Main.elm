@@ -28,16 +28,16 @@ type alias Entry =
     { content : String
     , bookPosition : Position
     , year : Maybe Year
-    , month : Maybe Month
+    -- , month : Maybe Month
     }
 
 type Year = Year Int
 
-type Month = Jan | Feb | Mar | Apr | May | Jun | Jul | Aug | Sep | Oct | Nov | Dec
+-- type Month = Jan | Feb | Mar | Apr | May | Jun | Jul | Aug | Sep | Oct | Nov | Dec
 
 
-months : List String
-months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec", "None"]
+-- months : List String
+-- months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec", "None"]
 
 type Position = Position Int
 
@@ -47,7 +47,7 @@ type alias Book =
   { name : String
   , position : Position
   , year : Maybe Year
-  , month : Maybe Month
+--   , month : Maybe Month
   }
 
 type alias Timeline =
@@ -82,8 +82,8 @@ initialModel =
 initialTimeline : Timeline
 initialTimeline =
  { bookSeriesName = "Anita Blake"
-  , books = [ Book "Guilty Pleasures" (Position 1) (Just (Year 0)) (Just Jul)
-                , Book "The Laughing Corpse" (Position 2) (Just (Year 0)) (Just Aug)
+  , books = [ Book "Guilty Pleasures" (Position 1) (Just (Year 0)) --(Just Jul)
+                , Book "The Laughing Corpse" (Position 2) (Just (Year 0)) --(Just Aug)
                 ]
     , entries = initialEntries
   }
@@ -93,7 +93,7 @@ initialBook =
   { name = ""
   , position = Position 1
   , year = Just (Year 0)
-  , month = Just Jan
+--   , month = Just Jan
   }
 
 
@@ -101,7 +101,7 @@ initialEntry : Entry
 initialEntry = { content = ""
                         ,  bookPosition = Position 1
                         , year = Nothing
-                        , month = Nothing
+                        -- , month = Nothing
                     }
 
 
@@ -109,22 +109,22 @@ initialEntries : List Entry
 initialEntries = [ { content = "Nikolaos dies"
                         ,  bookPosition = Position 1
                         , year = Just (Year 0)
-                        , month = Just Jul
+                        -- , month = Just Jul
                     }
                     , { content = "Jean-Claude becames Master of the City"
                         ,  bookPosition = Position 1
                         , year = Just (Year 0)
-                        , month = Just Jul
+                        -- , month = Just Jul
                     }
                     , { content = "Anita receives the first and second marks"
                         ,  bookPosition = Position 1
                         , year = Just (Year 0)
-                        , month = Just Jul
+                        -- , month = Just Jul
                     }
                     , { content = "Anita meets vaudun priests Dominga Salvador"
                         ,  bookPosition = Position 2
                         , year = Just (Year 0)
-                        , month = Just Jul
+                        -- , month = Just Jul
                     }
                     ]
 
@@ -138,7 +138,7 @@ type Msg
   | SetBookPosition String
   | SetBookName String
   | SetBookYear String
-  | SetBookMonth String
+--   | SetBookMonth String
   | SetBookEntryContent String
   | SetBookEntryPosition String
 
@@ -179,10 +179,10 @@ update msg model =
       ({ model | newBookFields = addBookYear model.newBookFields (Maybe.withDefault 0 y) }
       , Cmd.none)
 
-    SetBookMonth month ->
-      ({ model | newBookFields = addBookMonth model.newBookFields month }
-      , Cmd.none
-      )
+    -- SetBookMonth month ->
+    --   ({ model | newBookFields = addBookMonth model.newBookFields month }
+    --   , Cmd.none
+    --   )
 
     SetBookEntryContent content ->
       ({ model | newEntryFields = addEntryContent model.newEntryFields content }
@@ -221,9 +221,9 @@ addBookYear book year =
     { book | year = Just (Year year)}
 
 
-addBookMonth : Book -> String -> Book
-addBookMonth book month =
-    { book | month = getMonth month}
+-- addBookMonth : Book -> String -> Book
+-- addBookMonth book month =
+--     { book | month = getMonth month}
 
 
 addEntry : Entry -> Timeline -> Timeline
@@ -273,41 +273,41 @@ getYear year =
         Nothing -> ""
 
 
-getMonthStr : Maybe Month -> String
-getMonthStr month = 
-    case month of
-        Just Jan -> "Jan"
-        Just Feb -> "Feb"
-        Just Mar -> "Mar"
-        Just Apr -> "Apr"
-        Just May -> "May"
-        Just Jun -> "Jun"
-        Just Jul -> "Jul"
-        Just Aug -> "Aug"
-        Just Sep -> "Sep"
-        Just Oct -> "Oct"
-        Just Nov -> "Nov"
-        Just Dec -> "Dec"
-        Nothing -> "None"
+-- getMonthStr : Maybe Month -> String
+-- getMonthStr month = 
+--     case month of
+--         Just Jan -> "Jan"
+--         Just Feb -> "Feb"
+--         Just Mar -> "Mar"
+--         Just Apr -> "Apr"
+--         Just May -> "May"
+--         Just Jun -> "Jun"
+--         Just Jul -> "Jul"
+--         Just Aug -> "Aug"
+--         Just Sep -> "Sep"
+--         Just Oct -> "Oct"
+--         Just Nov -> "Nov"
+--         Just Dec -> "Dec"
+--         Nothing -> "None"
 
 
 
-getMonth : String -> Maybe Month
-getMonth month = 
-    case month of
-        "Jan" -> Just Jan
-        "Feb" -> Just Feb
-        "Mar" -> Just Mar
-        "Apr" -> Just Apr
-        "May" -> Just May
-        "Jun" -> Just Jun
-        "Jul" -> Just Jul
-        "Aug" -> Just Aug
-        "Sep" -> Just Sep
-        "Oct" -> Just Oct
-        "Nov" -> Just Nov
-        "Dec" -> Just Dec
-        _ -> Nothing
+-- getMonth : String -> Maybe Month
+-- getMonth month = 
+--     case month of
+--         "Jan" -> Just Jan
+--         "Feb" -> Just Feb
+--         "Mar" -> Just Mar
+--         "Apr" -> Just Apr
+--         "May" -> Just May
+--         "Jun" -> Just Jun
+--         "Jul" -> Just Jul
+--         "Aug" -> Just Aug
+--         "Sep" -> Just Sep
+--         "Oct" -> Just Oct
+--         "Nov" -> Just Nov
+--         "Dec" -> Just Dec
+--         _ -> Nothing
 
 
 monthToOption : String -> Html Msg
@@ -360,10 +360,10 @@ view model =
                     [ text "Year"
                     , input [ type_ "text", name "year", onInput SetBookYear  ] []
                     ]
-                , label []
-                    [ text "Month"
-                    , Html.select [ name "month" , onInput SetBookMonth  ] (List.map monthToOption months)
-                    ]
+                -- , label []
+                --     [ text "Month"
+                --     , Html.select [ name "month" , onInput SetBookMonth  ] (List.map monthToOption months)
+                --     ]
                 , button [ onClick NewBook ] [ text "Submit" ]
                 ]
             , div [] [ viewError model.errorMessage] -- add new book ERROR
