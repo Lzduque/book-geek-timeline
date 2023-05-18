@@ -489,6 +489,7 @@ viewTimeLine timeline =
             ] [ viewEntries timeline.entries, viewBookInfo timeline.books ]
 
 
+-- this should probably be groupWhile after sort
 groupByPosition : List Entry -> List ( Entry, List Entry )
 groupByPosition entries = List.Extra.gatherEqualsBy .bookPosition entries
     
@@ -578,31 +579,7 @@ viewBookInfo books =
                             , style "justify-content" "center"
                             , style "align-items" "center"
                             ] [ text (getPosition b.position)]
-                    -- , p [ style "height" "50px"
-                    --         -- , style "border" "solid"
-                    --         , style "border-top" "solid"
-                    --         -- , style "border-left" "solid"
-                    --         , style "border-width" "0.5px"
-                    --         , style "margin" "0px"
-                    --         , style "padding" "10px"
-                    --         , style "background-color" "lightskyblue"
-                    --         , style "display" "flex"
-                    --         , style "justify-content" "center"
-                    --         , style "align-items" "center"
-                    --         ] [ text (getYear b.year) ]
-                    -- , p [ style "height" "50px"
-                    --         -- , style "border" "solid"
-                    --         , style "border-top" "solid"
-                    --         -- , style "border-left" "solid"
-                    --         , style "border-width" "0.5px"
-                    --         , style "margin" "0px"
-                    --         , style "padding" "10px"
-                    --         , style "background-color" "lightgoldenrodyellow"
-                    --         , style "display" "flex"
-                    --         , style "justify-content" "center"
-                    --         , style "align-items" "center"
-                    --         ] [ text (getMonthStr b.month)]
             ]
-    in div [ class "books-infos"
+    in div [ class "legend"
                 , style "display" "flex"
                 , style "flex-direction" "row"] (List.map bookView books)
