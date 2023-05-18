@@ -139,7 +139,7 @@ type Msg
   | NewEntry
   | SetBookPosition String
   | SetBookName String
-  | SetBookYear String
+--   | SetBookYear String
 --   | SetBookMonth String
   | SetBookEntryContent String
   | SetBookEntryPosition String
@@ -195,6 +195,11 @@ update msg model =
       ({ model | newEntryFields = addEntryBookPosition model.newEntryFields bookPosition }
       , Cmd.none
       )
+
+    -- SetBookEntryYear year ->
+    --   ({ model | newEntryFields = addEntryBookPosition model.newEntryFields bookPosition }
+    --   , Cmd.none
+    --   )
 
 
 addEntryBookPosition : Entry -> String -> Entry
@@ -358,10 +363,10 @@ view model =
                     [ text "Name"
                     , input [ type_ "text", name "name", onInput SetBookName  ] []
                     ]
-                , label []
-                    [ text "Year"
-                    , input [ type_ "text", name "year", onInput SetBookYear  ] []
-                    ]
+                -- , label []
+                --     [ text "Year"
+                --     , input [ type_ "text", name "year", onInput SetBookYear  ] []
+                --     ]
                 -- , label []
                 --     [ text "Month"
                 --     , Html.select [ name "month" , onInput SetBookMonth  ] (List.map monthToOption months)
@@ -483,30 +488,14 @@ viewTimeLine timeline =
             , style "flex-direction" "column"
             ] [ viewEntries timeline.entries, viewBookInfo timeline.books ]
 
+type alias GroupedEntriesBy a = 
+    { position : a
+    , entries : List Entry
+    }
 
-groupByPosition : List Entry -> List (List Entry)
-groupByPosition entries =
-    -- let
-    --     byPosition acc cur = 
-    --         if cur.bookPosition == (Maybe.withDefault [] (List.tail acc)).bookPosition 
-    --         then acc ++ [cur] 
-    --         else acc
-    -- in 
-    List.foldl byPosition [] entries
-
-byPosition : List Entry -> Entry -> List Entry
-byPosition acc cur =
-    let
-        lastGroupEntry = List.Extra.last acc
-        lastEntry = List.Extra.last (Maybe.withDefault [] lastGroupEntry)
-    in
-    case lastEntry of
-        Just e -> 
-            if cur.bookPosition == e.bookPosition
-            then List.append acc [cur]
-            else List.append acc [cur]
-        Nothing -> List.append acc [cur]
-
+groupByPosition : List Entry -> List ( Entry, List Entry )
+groupByPosition entries = List.Extra.gatherEqualsBy .bookPosition entries
+    
 
 viewEntries : List Entry -> Html msg
 viewEntries entries =
@@ -514,10 +503,11 @@ viewEntries entries =
             , style "display" "flex"
             , style "flex-direction" "row"
             , style "align-items" "stretch"
-            ] (List.map viewEntry (groupByPosition (List.sortWith (\e f -> compare (getPositionNum(e.bookPosition)) (getPositionNum(f.bookPosition))) entries))) -- sorted and grouped now by the book position, not year
+            ] (List.map viewEntry (groupByPosition entries)
+            ) -- sorted and grouped now by the book position, not year
 
 
-viewEntry : List Entry -> Html msg
+viewEntry : ( Entry, List Entry ) -> Html msg
 viewEntry group =
     let
         entryView e =
@@ -535,7 +525,9 @@ viewEntry group =
                             , style "align-items" "center"
                             ] [ text e.content ]
                     ]
-    in div [ class "entries"
+    in div []
+            [ p [] [ text (Tuple.first group).content ]
+            , div [ class "entries"
                 , style "background-color" "lightgrey"
                 , style "border" "black"
                 , style "border-left" "solid"
@@ -543,7 +535,8 @@ viewEntry group =
                 , style "width" "200px"
                 , style "display" "flex"
                 , style "flex-direction" "column-reverse"
-            ] (List.map entryView group)
+                ] (List.map entryView (Tuple.second group))
+            ]
 
 
 viewBookInfo : List Book -> Html msg
@@ -585,18 +578,18 @@ viewBookInfo books =
                             , style "justify-content" "center"
                             , style "align-items" "center"
                             ] [ text (getPosition b.position)]
-                    , p [ style "height" "50px"
-                            -- , style "border" "solid"
-                            , style "border-top" "solid"
-                            -- , style "border-left" "solid"
-                            , style "border-width" "0.5px"
-                            , style "margin" "0px"
-                            , style "padding" "10px"
-                            , style "background-color" "lightskyblue"
-                            , style "display" "flex"
-                            , style "justify-content" "center"
-                            , style "align-items" "center"
-                            ] [ text (getYear b.year) ]
+                    -- , p [ style "height" "50px"
+                    --         -- , style "border" "solid"
+                    --         , style "border-top" "solid"
+                    --         -- , style "border-left" "solid"
+                    --         , style "border-width" "0.5px"
+                    --         , style "margin" "0px"
+                    --         , style "padding" "10px"
+                    --         , style "background-color" "lightskyblue"
+                    --         , style "display" "flex"
+                    --         , style "justify-content" "center"
+                    --         , style "align-items" "center"
+                    --         ] [ text (getYear b.year) ]
                     -- , p [ style "height" "50px"
                     --         -- , style "border" "solid"
                     --         , style "border-top" "solid"
