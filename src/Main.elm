@@ -365,35 +365,43 @@ viewNewEntryForm error =
             , style "display" "flex" 
             , style "flex-direction" "column"
             , style "padding" "0 10px 10px 10px"          
-            , style "background-color" "lightgray"          
-            ]  [ p [ style "text-align" "left"
+            , style "background-color" "lightgreen"
+            , style "width" "auto"
+            ] [ p [ style "text-align" "left"
                     , style "font-weight" "bold" ]
-                    [ text "Add New Entry: "] -- add new entry
-            , div [ class "new-entry-form" 
-                    , style "display" "flex" 
+                    [ text "Add new Entry: "] -- add new entry
+                , div [ class "new-entry-form" 
+                    , style "display" "inline-flex" 
                     , style "flex-direction" "row" 
                     , style "flex-wrap" "wrap" 
+                    , style "margin-bottom" "10px" 
                     ]  -- add new entry
-                    [ label [ style "margin-right" "20px" ]
-                        [ text "Book Position"
-                        , input [ type_ "text"
-                                    , name "bookPosition"
-                                    , onInput SetBookEntryPosition
-                                    , style "margin-left" "10px" ] []
-                        ]
-                    , label [ style "margin-right" "20px" ]
-                        [ text "Book Year"
-                        , input [ type_ "text"
-                                    , name "bookYear"
-                                    , onInput SetBookEntryYear, style "margin-left" "10px" ] []
-                        ]
-                    , label [ style "margin-right" "20px" ]
-                        [ text "Content"
-                        , input [ type_ "text"
-                                    , name "content"
-                                    , onInput SetBookEntryContent
-                                    , style "margin-left" "10px" ] []
-                        ]
+                    [ label [ style "margin-right" "20px"
+                                , style "margin" "5px" 
+                                ]
+                                [ text "Book Position: "
+                                , input [ type_ "text"
+                                            , name "bookPosition"
+                                            , onInput SetBookEntryPosition
+                                            , style "margin-left" "5px" ] []
+                                ]
+                    , label [ style "margin-right" "20px"
+                                , style "margin" "5px" 
+                                ]
+                                [ text "Book Year: "
+                                , input [ type_ "text"
+                                            , name "bookYear"
+                                            , onInput SetBookEntryYear, style "margin-left" "5px" ] []
+                                ]
+                    , label [ style "margin-right" "20px"
+                                , style "margin" "5px" 
+                                ]
+                                [ text "Content: "
+                                , input [ type_ "text"
+                                            , name "content"
+                                            , onInput SetBookEntryContent
+                                            , style "margin-left" "5px" ] []
+                                ]
                     , button [ onClick NewEntry ] [ text "Submit" ]
                 ]
             ]
@@ -402,34 +410,40 @@ viewNewEntryForm error =
 viewNewBookForm : Maybe Error -> Html Msg
 viewNewBookForm error =
     div [ class "new-book-form" 
-            , style "display" "flex" 
+            , style "display" "inline-flex" 
             , style "flex-direction" "column" 
             , style "margin-bottom" "10px"          
             , style "padding" "0 10px 10px 10px"          
-            , style "background-color" "lightgray"          
+            , style "background-color" "powderblue"
+            , style "width" "auto"
             ] [ p [ style "text-align" "left"
                     , style "font-weight" "bold" ]
                     [ text ("Add new Book: ")
                     ] -- add new book
-            , div [ class "new-book-form" 
-                    , style "display" "flex" 
+                , div [ class "new-book-form" 
+                    , style "display" "inline-flex" 
                     , style "flex-direction" "row" 
                     , style "flex-wrap" "wrap" 
+                    , style "margin-bottom" "10px" 
                     ]  -- add new book
-                    [ label [ style "margin-right" "20px" ]
-                        [ text "Position"
-                        , input [ type_ "text"
-                                    , name "position"
-                                    , onInput SetBookPosition
-                                    , style "margin-left" "10px" ] []
-                        ]
-                    , label [ style "margin-right" "20px" ]
-                        [ text "Name"
-                        , input [ type_ "text"
-                                    , name "name"
-                                    , onInput SetBookName
-                                    , style "margin-left" "10px" ] []
-                        ]
+                    [ label [ style "margin-right" "20px"
+                                , style "margin" "5px" 
+                                ]
+                                [ text "Position: "
+                                , input [ type_ "text"
+                                            , name "position"
+                                            , onInput SetBookPosition
+                                            , style "margin-left" "5px" ] []
+                                ]
+                    , label [ style "margin-right" "20px"
+                                , style "margin" "5px" 
+                                ]
+                                [ text "Name: "
+                                , input [ type_ "text"
+                                            , name "name"
+                                            , onInput SetBookName
+                                            , style "margin-left" "5px" ] []
+                                ]
                     , button [ onClick NewBook ] [ text "Submit" ]
                 ]
             , div [] [ viewError error ] -- add new book ERROR
