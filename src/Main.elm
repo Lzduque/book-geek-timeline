@@ -445,30 +445,30 @@ viewLabels =
                                 , style "justify-content" "flex-start"
                                 , style "align-items" "center"
                                 ] [ text "Position" ]
-                        , p [ style "height" "50px"
-                                -- , style "border" "solid"
-                                , style "border-top" "solid"
-                                , style "border-right" "solid"
-                                , style "border-width" "0.5px"
-                                , style "margin" "0px"
-                                , style "padding" "10px"
-                                , style "background-color" "lightskyblue"
-                                , style "display" "flex"
-                                , style "justify-content" "flex-start"
-                                , style "align-items" "center"
-                                ] [ text "Year" ]
-                        , p [ style "height" "50px"
-                                -- , style "border" "solid"
-                                , style "border-top" "solid"
-                                , style "border-right" "solid"
-                                , style "border-width" "0.5px"
-                                , style "margin" "0px"
-                                , style "padding" "10px"
-                                , style "background-color" "lightgoldenrodyellow"
-                                , style "display" "flex"
-                                , style "justify-content" "flex-start"
-                                , style "align-items" "center"
-                                ] [ text "Month" ]
+                        -- , p [ style "height" "50px"
+                        --         -- , style "border" "solid"
+                        --         , style "border-top" "solid"
+                        --         , style "border-right" "solid"
+                        --         , style "border-width" "0.5px"
+                        --         , style "margin" "0px"
+                        --         , style "padding" "10px"
+                        --         , style "background-color" "lightskyblue"
+                        --         , style "display" "flex"
+                        --         , style "justify-content" "flex-start"
+                        --         , style "align-items" "center"
+                        --         ] [ text "Year" ]
+                        -- , p [ style "height" "50px"
+                        --         -- , style "border" "solid"
+                        --         , style "border-top" "solid"
+                        --         , style "border-right" "solid"
+                        --         , style "border-width" "0.5px"
+                        --         , style "margin" "0px"
+                        --         , style "padding" "10px"
+                        --         , style "background-color" "lightgoldenrodyellow"
+                        --         , style "display" "flex"
+                        --         , style "justify-content" "flex-start"
+                        --         , style "align-items" "center"
+                        --         ] [ text "Month" ]
                         ]
             ]
 
@@ -525,9 +525,7 @@ viewEntry group =
                             , style "align-items" "center"
                             ] [ text e.content ]
                     ]
-    in div []
-            [ p [] [ text (Tuple.first group).content ]
-            , div [ class "entries"
+    in div [ class "entries"
                 , style "background-color" "lightgrey"
                 , style "border" "black"
                 , style "border-left" "solid"
@@ -535,8 +533,7 @@ viewEntry group =
                 , style "width" "200px"
                 , style "display" "flex"
                 , style "flex-direction" "column-reverse"
-                ] (List.map entryView (Tuple.second group))
-            ]
+                ] (List.map entryView ((Tuple.first  group) :: (Tuple.second group)))
 
 
 viewBookInfo : List Book -> Html msg
