@@ -47,7 +47,8 @@ type Error = Error String
 type alias Book = 
   { name : String
   , position : Position
-  , year : Maybe Year
+--   , colour : String
+--   , year : Maybe Year
 --   , month : Maybe Month
   }
 
@@ -83,8 +84,8 @@ initialModel =
 initialTimeline : Timeline
 initialTimeline =
  { bookSeriesName = "Anita Blake"
-  , books = [ Book "Guilty Pleasures" (Position 1) (Just (Year 0)) --(Just Jul)
-                , Book "The Laughing Corpse" (Position 2) (Just (Year 0)) --(Just Aug)
+  , books = [ Book "Guilty Pleasures" (Position 1) --(Just (Year 0)) --(Just Jul)
+                , Book "The Laughing Corpse" (Position 2)-- (Just (Year 0)) --(Just Aug)
                 ]
     , entries = initialEntries
   }
@@ -93,7 +94,7 @@ initialBook : Book
 initialBook =
   { name = ""
   , position = Position 1
-  , year = Just (Year 0)
+--   , year = Just (Year 0)
 --   , month = Just Jan
   }
 
@@ -175,10 +176,10 @@ update msg model =
       , Cmd.none
       )
 
-    SetBookYear year ->
-      let y = String.toInt year in
-      ({ model | newBookFields = addBookYear model.newBookFields (Maybe.withDefault 0 y) }
-      , Cmd.none)
+    -- SetBookYear year ->
+    --   let y = String.toInt year in
+    --   ({ model | newBookFields = addBookYear model.newBookFields (Maybe.withDefault 0 y) }
+    --   , Cmd.none)
 
     -- SetBookMonth month ->
     --   ({ model | newBookFields = addBookMonth model.newBookFields month }
@@ -217,9 +218,9 @@ addBookName book name =
     { book | name = name}
 
 
-addBookYear : Book -> Int -> Book
-addBookYear book year =
-    { book | year = Just (Year year)}
+-- addBookYear : Book -> Int -> Book
+-- addBookYear book year =
+--     { book | year = Just (Year year)}
 
 
 -- addBookMonth : Book -> String -> Book
@@ -494,6 +495,18 @@ groupByPosition entries =
     List.foldl byPosition [] entries
 
 byPosition : List Entry -> Entry -> List Entry
+byPosition acc cur =
+    let
+        lastGroupEntry = List.Extra.last acc
+        lastEntry = List.Extra.last (Maybe.withDefault [] lastGroupEntry)
+    in
+    case lastEntry of
+        Just e -> 
+            if cur.bookPosition == e.bookPosition
+            then List.append acc [cur]
+            else List.append acc [cur]
+        Nothing -> List.append acc [cur]
+
 
 viewEntries : List Entry -> Html msg
 viewEntries entries =
@@ -584,18 +597,18 @@ viewBookInfo books =
                             , style "justify-content" "center"
                             , style "align-items" "center"
                             ] [ text (getYear b.year) ]
-                    , p [ style "height" "50px"
-                            -- , style "border" "solid"
-                            , style "border-top" "solid"
-                            -- , style "border-left" "solid"
-                            , style "border-width" "0.5px"
-                            , style "margin" "0px"
-                            , style "padding" "10px"
-                            , style "background-color" "lightgoldenrodyellow"
-                            , style "display" "flex"
-                            , style "justify-content" "center"
-                            , style "align-items" "center"
-                            ] [ text (getMonthStr b.month)]
+                    -- , p [ style "height" "50px"
+                    --         -- , style "border" "solid"
+                    --         , style "border-top" "solid"
+                    --         -- , style "border-left" "solid"
+                    --         , style "border-width" "0.5px"
+                    --         , style "margin" "0px"
+                    --         , style "padding" "10px"
+                    --         , style "background-color" "lightgoldenrodyellow"
+                    --         , style "display" "flex"
+                    --         , style "justify-content" "center"
+                    --         , style "align-items" "center"
+                    --         ] [ text (getMonthStr b.month)]
             ]
     in div [ class "books-infos"
                 , style "display" "flex"
