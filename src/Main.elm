@@ -525,7 +525,9 @@ viewEntry group =
                             , style "align-items" "center"
                             ] [ text e.content ]
                     ]
-    in div [ class "entries"
+    in div []
+            [ p [] [ text (getPosition(Tuple.first group).bookPosition) ]
+            , div [ class "entries"
                 , style "background-color" "lightgrey"
                 , style "border" "black"
                 , style "border-left" "solid"
@@ -534,6 +536,7 @@ viewEntry group =
                 , style "display" "flex"
                 , style "flex-direction" "column-reverse"
                 ] (List.map entryView ((Tuple.first  group) :: (Tuple.second group)))
+            ]
 
 
 viewBookInfo : List Book -> Html msg
