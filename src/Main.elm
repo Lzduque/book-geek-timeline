@@ -139,10 +139,9 @@ type Msg
   | NewEntry
   | SetBookPosition String
   | SetBookName String
---   | SetBookYear String
---   | SetBookMonth String
   | SetBookEntryContent String
   | SetBookEntryPosition String
+  | SetBookEntryYear String
 
 
 update : Msg -> Model -> (Model, Cmd Msg)
@@ -196,10 +195,18 @@ update msg model =
       , Cmd.none
       )
 
-    -- SetBookEntryYear year ->
-    --   ({ model | newEntryFields = addEntryBookPosition model.newEntryFields bookPosition }
-    --   , Cmd.none
-    --   )
+    SetBookEntryYear year ->
+      ({ model | newEntryFields = addEntryBookYear model.newEntryFields year }
+      , Cmd.none
+      )
+
+
+addEntryBookYear : Entry -> String -> Entry
+addEntryBookYear entry year =
+    let n = String.toInt year in
+    case n of
+        Just y -> { entry | year = Just (Year y)}
+        Nothing -> { entry | year = Nothing}
 
 
 addEntryBookPosition : Entry -> String -> Entry
@@ -372,6 +379,10 @@ view model =
                 [ label []
                     [ text "Book Position"
                     , input [ type_ "text", name "bookPosition", onInput SetBookEntryPosition ] []
+                    ]
+                , label []
+                    [ text "Book Year"
+                    , input [ type_ "text", name "bookYear", onInput SetBookEntryYear ] []
                     ]
                 , label []
                     [ text "Content"
