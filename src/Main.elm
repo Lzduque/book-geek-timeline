@@ -349,7 +349,7 @@ view model =
                 , style "display" "flex"
                 , style "flex-direction" "row"
                 , style "align-items" "flex-end"
-                ] [viewLabels, viewTimeLine model.timeline] -- timeline
+                ] [ viewTimeLine model.timeline ] -- timeline
             , p [ style "text-align" "left" ]
                 [ text "— "
                 , text ("Add new Book: ")
@@ -390,87 +390,87 @@ view model =
         ]
 
 
-viewLabels : Html Msg
-viewLabels =
-    div [ class "labels"
-            ,  style "display" "flex"
-            , style "flex-direction" "column"
-            ] [ div [ class "labels-entries"
-                        , style "background-color" "lightgrey"
-                        , style "width" "100px"
-                        , style "display" "flex"
-                        , style "flex-direction" "column-reverse"
-                        ]
-                        [ p [ style "height" "50px"
-                            -- , style "border" "solid"
-                            , style "border-bottom" "solid"
-                            , style "border-right" "solid"
-                            , style "border-width" "0.5px"
-                            , style "margin" "0px"
-                            , style "padding" "10px"
-                            , style "display" "flex"
-                            , style "justify-content" "flex-start"
-                            , style "align-items" "center"
-                            ]
-                            [ text "Entries" ]
-                        ]
-                , div [ class "labels-book-info"
-                        , style "background-color" "lightgrey"
-                        , style "width" "100px"
-                        , style "display" "flex"
-                        , style "flex-direction" "column"
-                        ]
-                            [ p [ style "height" "50px"
-                                -- , style "border" "solid"
-                                , style "border-top" "solid"
-                                , style "border-right" "solid"
-                                , style "border-width" "0.5px"
-                                , style "margin" "0px"
-                                , style "padding" "10px"
-                                , style "background-color" "plum"
-                                , style "display" "flex"
-                                , style "justify-content" "flex-start"
-                                , style "align-items" "center"
-                                ]
-                                [ text "Book" ]
-                        , p [ style "height" "50px"
-                                -- , style "border" "solid"
-                                , style "border-top" "solid"
-                                , style "border-right" "solid"
-                                , style "border-width" "0.5px"
-                                , style "margin" "0px"
-                                , style "padding" "10px"
-                                , style "background-color" "pink"
-                                , style "display" "flex"
-                                , style "justify-content" "flex-start"
-                                , style "align-items" "center"
-                                ] [ text "Position" ]
-                        -- , p [ style "height" "50px"
-                        --         -- , style "border" "solid"
-                        --         , style "border-top" "solid"
-                        --         , style "border-right" "solid"
-                        --         , style "border-width" "0.5px"
-                        --         , style "margin" "0px"
-                        --         , style "padding" "10px"
-                        --         , style "background-color" "lightskyblue"
-                        --         , style "display" "flex"
-                        --         , style "justify-content" "flex-start"
-                        --         , style "align-items" "center"
-                        --         ] [ text "Year" ]
-                        -- , p [ style "height" "50px"
-                        --         -- , style "border" "solid"
-                        --         , style "border-top" "solid"
-                        --         , style "border-right" "solid"
-                        --         , style "border-width" "0.5px"
-                        --         , style "margin" "0px"
-                        --         , style "padding" "10px"
-                        --         , style "background-color" "lightgoldenrodyellow"
-                        --         , style "display" "flex"
-                        --         , style "justify-content" "flex-start"
-                        --         , style "align-items" "center"
-                        --         ] [ text "Month" ]
-                        ]
-            ]
+-- viewLabels : Html Msg
+-- viewLabels =
+--     div [ class "labels"
+--             ,  style "display" "flex"
+--             , style "flex-direction" "column"
+--             ] [ div [ class "labels-entries"
+--                         , style "background-color" "lightgrey"
+--                         , style "width" "100px"
+--                         , style "display" "flex"
+--                         , style "flex-direction" "column-reverse"
+--                         ]
+--                         [ p [ style "height" "50px"
+--                             -- , style "border" "solid"
+--                             , style "border-bottom" "solid"
+--                             , style "border-right" "solid"
+--                             , style "border-width" "0.5px"
+--                             , style "margin" "0px"
+--                             , style "padding" "10px"
+--                             , style "display" "flex"
+--                             , style "justify-content" "flex-start"
+--                             , style "align-items" "center"
+--                             ]
+--                             [ text "Entries" ]
+--                         ]
+--                 , div [ class "labels-book-info"
+--                         , style "background-color" "lightgrey"
+--                         , style "width" "100px"
+--                         , style "display" "flex"
+--                         , style "flex-direction" "column"
+--                         ]
+--                             [ p [ style "height" "50px"
+--                                 -- , style "border" "solid"
+--                                 , style "border-top" "solid"
+--                                 , style "border-right" "solid"
+--                                 , style "border-width" "0.5px"
+--                                 , style "margin" "0px"
+--                                 , style "padding" "10px"
+--                                 , style "background-color" "plum"
+--                                 , style "display" "flex"
+--                                 , style "justify-content" "flex-start"
+--                                 , style "align-items" "center"
+--                                 ]
+--                                 [ text "Book" ]
+--                         , p [ style "height" "50px"
+--                                 -- , style "border" "solid"
+--                                 , style "border-top" "solid"
+--                                 , style "border-right" "solid"
+--                                 , style "border-width" "0.5px"
+--                                 , style "margin" "0px"
+--                                 , style "padding" "10px"
+--                                 , style "background-color" "pink"
+--                                 , style "display" "flex"
+--                                 , style "justify-content" "flex-start"
+--                                 , style "align-items" "center"
+--                                 ] [ text "Position" ]
+--                         -- , p [ style "height" "50px"
+--                         --         -- , style "border" "solid"
+--                         --         , style "border-top" "solid"
+--                         --         , style "border-right" "solid"
+--                         --         , style "border-width" "0.5px"
+--                         --         , style "margin" "0px"
+--                         --         , style "padding" "10px"
+--                         --         , style "background-color" "lightskyblue"
+--                         --         , style "display" "flex"
+--                         --         , style "justify-content" "flex-start"
+--                         --         , style "align-items" "center"
+--                         --         ] [ text "Year" ]
+--                         -- , p [ style "height" "50px"
+--                         --         -- , style "border" "solid"
+--                         --         , style "border-top" "solid"
+--                         --         , style "border-right" "solid"
+--                         --         , style "border-width" "0.5px"
+--                         --         , style "margin" "0px"
+--                         --         , style "padding" "10px"
+--                         --         , style "background-color" "lightgoldenrodyellow"
+--                         --         , style "display" "flex"
+--                         --         , style "justify-content" "flex-start"
+--                         --         , style "align-items" "center"
+--                         --         ] [ text "Month" ]
+--                         ]
+--             ]
 
 
 viewError : Maybe Error -> Html Msg
@@ -488,10 +488,6 @@ viewTimeLine timeline =
             , style "flex-direction" "column"
             ] [ viewEntries timeline.entries, viewBookInfo timeline.books ]
 
-type alias GroupedEntriesBy a = 
-    { position : a
-    , entries : List Entry
-    }
 
 groupByPosition : List Entry -> List ( Entry, List Entry )
 groupByPosition entries = List.Extra.gatherEqualsBy .bookPosition entries
@@ -525,9 +521,12 @@ viewEntry group =
                             , style "align-items" "center"
                             ] [ text e.content ]
                     ]
-    in div []
-            [ p [] [ text (getPosition(Tuple.first group).bookPosition) ]
-            , div [ class "entries"
+    in div [ class "position-entries"
+                , style "display" "flex"
+                , style "flex-direction" "column"
+                , style "align-items" "center" 
+                , style "justify-content" "flex-end" 
+                ] [ div [ class "entries"
                 , style "background-color" "lightgrey"
                 , style "border" "black"
                 , style "border-left" "solid"
@@ -536,6 +535,7 @@ viewEntry group =
                 , style "display" "flex"
                 , style "flex-direction" "column-reverse"
                 ] (List.map entryView ((Tuple.first  group) :: (Tuple.second group)))
+                , p [ class "position" ] [ text (getPosition(Tuple.first group).bookPosition) ]
             ]
 
 
