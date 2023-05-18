@@ -363,14 +363,6 @@ view model =
                     [ text "Name"
                     , input [ type_ "text", name "name", onInput SetBookName  ] []
                     ]
-                -- , label []
-                --     [ text "Year"
-                --     , input [ type_ "text", name "year", onInput SetBookYear  ] []
-                --     ]
-                -- , label []
-                --     [ text "Month"
-                --     , Html.select [ name "month" , onInput SetBookMonth  ] (List.map monthToOption months)
-                --     ]
                 , button [ onClick NewBook ] [ text "Submit" ]
                 ]
             , div [] [ viewError model.errorMessage] -- add new book ERROR
@@ -390,88 +382,6 @@ view model =
         ]
 
 
--- viewLabels : Html Msg
--- viewLabels =
---     div [ class "labels"
---             ,  style "display" "flex"
---             , style "flex-direction" "column"
---             ] [ div [ class "labels-entries"
---                         , style "background-color" "lightgrey"
---                         , style "width" "100px"
---                         , style "display" "flex"
---                         , style "flex-direction" "column-reverse"
---                         ]
---                         [ p [ style "height" "50px"
---                             -- , style "border" "solid"
---                             , style "border-bottom" "solid"
---                             , style "border-right" "solid"
---                             , style "border-width" "0.5px"
---                             , style "margin" "0px"
---                             , style "padding" "10px"
---                             , style "display" "flex"
---                             , style "justify-content" "flex-start"
---                             , style "align-items" "center"
---                             ]
---                             [ text "Entries" ]
---                         ]
---                 , div [ class "labels-book-info"
---                         , style "background-color" "lightgrey"
---                         , style "width" "100px"
---                         , style "display" "flex"
---                         , style "flex-direction" "column"
---                         ]
---                             [ p [ style "height" "50px"
---                                 -- , style "border" "solid"
---                                 , style "border-top" "solid"
---                                 , style "border-right" "solid"
---                                 , style "border-width" "0.5px"
---                                 , style "margin" "0px"
---                                 , style "padding" "10px"
---                                 , style "background-color" "plum"
---                                 , style "display" "flex"
---                                 , style "justify-content" "flex-start"
---                                 , style "align-items" "center"
---                                 ]
---                                 [ text "Book" ]
---                         , p [ style "height" "50px"
---                                 -- , style "border" "solid"
---                                 , style "border-top" "solid"
---                                 , style "border-right" "solid"
---                                 , style "border-width" "0.5px"
---                                 , style "margin" "0px"
---                                 , style "padding" "10px"
---                                 , style "background-color" "pink"
---                                 , style "display" "flex"
---                                 , style "justify-content" "flex-start"
---                                 , style "align-items" "center"
---                                 ] [ text "Position" ]
---                         -- , p [ style "height" "50px"
---                         --         -- , style "border" "solid"
---                         --         , style "border-top" "solid"
---                         --         , style "border-right" "solid"
---                         --         , style "border-width" "0.5px"
---                         --         , style "margin" "0px"
---                         --         , style "padding" "10px"
---                         --         , style "background-color" "lightskyblue"
---                         --         , style "display" "flex"
---                         --         , style "justify-content" "flex-start"
---                         --         , style "align-items" "center"
---                         --         ] [ text "Year" ]
---                         -- , p [ style "height" "50px"
---                         --         -- , style "border" "solid"
---                         --         , style "border-top" "solid"
---                         --         , style "border-right" "solid"
---                         --         , style "border-width" "0.5px"
---                         --         , style "margin" "0px"
---                         --         , style "padding" "10px"
---                         --         , style "background-color" "lightgoldenrodyellow"
---                         --         , style "display" "flex"
---                         --         , style "justify-content" "flex-start"
---                         --         , style "align-items" "center"
---                         --         ] [ text "Month" ]
---                         ]
---             ]
-
 
 viewError : Maybe Error -> Html Msg
 viewError error =
@@ -489,9 +399,8 @@ viewTimeLine timeline =
             ] [ viewEntries timeline.entries, viewBookInfo timeline.books ]
 
 
--- this should probably be groupWhile after sort
 groupByPosition : List Entry -> List ( Entry, List Entry )
-groupByPosition entries = List.Extra.gatherEqualsBy .bookPosition entries
+groupByPosition entries = List.Extra.groupWhile (\a b -> (getPositionNum a.bookPosition) == (getPositionNum b.bookPosition)) (List.sortBy (\x -> getPositionNum x.bookPosition) entries)
     
 
 viewEntries : List Entry -> Html msg
@@ -501,7 +410,7 @@ viewEntries entries =
             , style "flex-direction" "row"
             , style "align-items" "stretch"
             ] (List.map viewEntry (groupByPosition entries)
-            ) -- sorted and grouped now by the book position, not year
+            ) -- sorted and grouped now by the book position, not year, as MVP
 
 
 viewEntry : ( Entry, List Entry ) -> Html msg
@@ -511,9 +420,7 @@ viewEntry group =
             div []
                     [ p [  class "entry"
                             , style "height" "50px"
-                            -- , style "border" "solid"
                             , style "border-bottom" "solid"
-                            -- , style "border-left" "solid"
                             , style "border-width" "0.5px"
                             , style "margin" "0px"
                             , style "padding" "10px"
@@ -556,9 +463,7 @@ viewBookInfo books =
                     , style "align-items" "stretch"
                     ]
                     [ p [ style "height" "50px"
-                            -- , style "border" "solid"
                             , style "border-top" "solid"
-                            -- , style "border-left" "solid"
                             , style "border-width" "0.5px"
                             , style "margin" "0px"
                             , style "padding" "10px"
@@ -568,9 +473,7 @@ viewBookInfo books =
                             , style "align-items" "center"
                             ] [ text b.name ]
                     , p [ style "height" "50px"
-                            -- , style "border" "solid"
                             , style "border-top" "solid"
-                            -- , style "border-left" "solid"
                             , style "border-width" "0.5px"
                             , style "margin" "0px"
                             , style "padding" "10px"
