@@ -355,7 +355,8 @@ view model =
             , div [ class "timeline"
                 , style "display" "flex"
                 , style "flex-direction" "row"
-                , style "align-items" "flex-end"
+                , style "justify-content" "flex-start"
+                , style "margin" "10px"
                 ] [ viewTimeLine model.timeline ] -- timeline
             , p [ style "text-align" "left" ]
                 [ text "— "
@@ -407,7 +408,7 @@ viewTimeLine timeline =
     div [  class "books"
             , style "display" "flex"
             , style "flex-direction" "column"
-            ] [ viewEntries timeline.entries, viewBookInfo timeline.books ]
+            ] [ viewEntries timeline.entries, viewLegend timeline.books ]
 
 
 groupByPosition : List Entry -> List ( Entry, List Entry )
@@ -458,42 +459,54 @@ viewEntry group =
             ]
 
 
-viewBookInfo : List Book -> Html msg
-viewBookInfo books =
+viewLegend : List Book -> Html msg
+viewLegend books =
     let 
         bookView b =
             div [ class "book-info"
-                    , style "background-color" "lightgrey"
-                    , style "border" "black"
-                    , style "border-left" "solid"
-                    , style "border-width" "0.5px"
-                    , style "width" "200px"
+                    -- , style "background-color" "lightgrey"
+                    -- , style "border" "black"
+                    -- , style "border-left" "solid"
+                    -- , style "border-width" "0.5px"
+                    -- , style "width" "200px"
+                    , style "margin-bottom" "10px"
                     , style "display" "flex"
-                    , style "flex-direction" "column"
+                    , style "flex-direction" "row"
                     , style "text-align" "center"
                     , style "align-items" "stretch"
                     ]
-                    [ p [ style "height" "50px"
-                            , style "border-top" "solid"
-                            , style "border-width" "0.5px"
-                            , style "margin" "0px"
-                            , style "padding" "10px"
-                            , style "background-color" "plum"
-                            , style "display" "flex"
-                            , style "justify-content" "center"
-                            , style "align-items" "center"
-                            ] [ text b.name ]
-                    , p [ style "height" "50px"
-                            , style "border-top" "solid"
-                            , style "border-width" "0.5px"
-                            , style "margin" "0px"
-                            , style "padding" "10px"
+                    [ div [ style "height" "20px"
+                            , style "width" "20px"
+                            , style "padding-right" "10px"
                             , style "background-color" "pink"
+                            -- , style "display" "flex"
+                            -- , style "justify-content" "center"
+                            -- , style "align-items" "center"
+                            ] []
+                            , p [ style "min-height" "20px"
+                            -- , style "border-top" "solid"
+                            -- , style "border-width" "0.5px"
+                            , style "margin" "0px"
+                            , style "padding-left" "10px"
+                            , style "padding-right" "10px"
+                            -- , style "background-color" "pink"
                             , style "display" "flex"
                             , style "justify-content" "center"
                             , style "align-items" "center"
                             ] [ text (getPosition b.position)]
+                            , p [ style "min-height" "20px"
+                            -- , style "border-top" "solid"
+                            -- , style "border-width" "0.5px"
+                            , style "margin" "0px"
+                            -- , style "padding" "10px"
+                            -- , style "background-color" "plum"
+                            , style "display" "flex"
+                            , style "justify-content" "center"
+                            , style "align-items" "center"
+                            ] [ text b.name ]
             ]
-    in div [ class "legend"
-                , style "display" "flex"
-                , style "flex-direction" "row"] (List.map bookView books)
+    in div [ class "legends" ] 
+                [ p [] [ text "Legends: "]
+                , div [ style "display" "flex"
+                , style "flex-direction" "column"] (List.map bookView books)
+                ]   
