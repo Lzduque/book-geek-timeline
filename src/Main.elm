@@ -21,7 +21,6 @@ main =
     }
 
 
-
 -- MODEL
 
 
@@ -343,14 +342,11 @@ getPositionNum position =
 
 view : Model -> Html Msg
 view model =
-  div []
-        [ p [ style "text-align" "left" ] -- header
-            [ text "— "
-            , text ("Timeline: " ++ model.timeline.bookSeriesName)
-            ]
-            , p [ style "text-align" "left" ]
-                [ text "— "
-                , text ("Books: ")
+  div [ class "body"
+        , style "margin" "10px" ]
+        [ h1 [ style "text-align" "left"
+                , style "weight" "bold"] -- header
+                [ text (model.timeline.bookSeriesName)
                 ]
             , div [ class "timeline"
                 , style "display" "flex"
@@ -358,41 +354,86 @@ view model =
                 , style "justify-content" "flex-start"
                 , style "margin" "10px"
                 ] [ viewTimeLine model.timeline ] -- timeline
-            , p [ style "text-align" "left" ]
-                [ text "— "
-                , text ("Add new Book: ")
-                ] -- add new book
-            , div []  -- add new book
-                [ label []
-                    [ text "Position"
-                    , input [ type_ "text", name "position", onInput SetBookPosition ] []
-                    ]
-                , label []
-                    [ text "Name"
-                    , input [ type_ "text", name "name", onInput SetBookName  ] []
-                    ]
-                , button [ onClick NewBook ] [ text "Submit" ]
-                ]
-            , div [] [ viewError model.errorMessage] -- add new book ERROR
-            , p [ style "text-align" "left" ]
-                [ text "— Add New Entry: "] -- add new entry
-            , div []  -- add new entry
-                [ label []
-                    [ text "Book Position"
-                    , input [ type_ "text", name "bookPosition", onInput SetBookEntryPosition ] []
-                    ]
-                , label []
-                    [ text "Book Year"
-                    , input [ type_ "text", name "bookYear", onInput SetBookEntryYear ] []
-                    ]
-                , label []
-                    [ text "Content"
-                    , input [ type_ "text", name "content", onInput SetBookEntryContent  ] []
-                    ]
-                , button [ onClick NewEntry ] [ text "Submit" ]
-                ]
+            , div [] [ viewNewBookForm model.errorMessage ]
+            , div [] [ viewNewEntryForm model.errorMessage ]
         ]
 
+
+viewNewEntryForm : Maybe Error -> Html Msg
+viewNewEntryForm error =
+    div [ class "new-entry-form" 
+            , style "display" "flex" 
+            , style "flex-direction" "column"
+            , style "padding" "0 10px 10px 10px"          
+            , style "background-color" "lightgray"          
+            ]  [ p [ style "text-align" "left"
+                    , style "font-weight" "bold" ]
+                    [ text "Add New Entry: "] -- add new entry
+            , div [ class "new-entry-form" 
+                    , style "display" "flex" 
+                    , style "flex-direction" "row" 
+                    , style "flex-wrap" "wrap" 
+                    ]  -- add new entry
+                    [ label [ style "margin-right" "20px" ]
+                        [ text "Book Position"
+                        , input [ type_ "text"
+                                    , name "bookPosition"
+                                    , onInput SetBookEntryPosition
+                                    , style "margin-left" "10px" ] []
+                        ]
+                    , label [ style "margin-right" "20px" ]
+                        [ text "Book Year"
+                        , input [ type_ "text"
+                                    , name "bookYear"
+                                    , onInput SetBookEntryYear, style "margin-left" "10px" ] []
+                        ]
+                    , label [ style "margin-right" "20px" ]
+                        [ text "Content"
+                        , input [ type_ "text"
+                                    , name "content"
+                                    , onInput SetBookEntryContent
+                                    , style "margin-left" "10px" ] []
+                        ]
+                    , button [ onClick NewEntry ] [ text "Submit" ]
+                ]
+            ]
+
+
+viewNewBookForm : Maybe Error -> Html Msg
+viewNewBookForm error =
+    div [ class "new-book-form" 
+            , style "display" "flex" 
+            , style "flex-direction" "column" 
+            , style "margin-bottom" "10px"          
+            , style "padding" "0 10px 10px 10px"          
+            , style "background-color" "lightgray"          
+            ] [ p [ style "text-align" "left"
+                    , style "font-weight" "bold" ]
+                    [ text ("Add new Book: ")
+                    ] -- add new book
+            , div [ class "new-book-form" 
+                    , style "display" "flex" 
+                    , style "flex-direction" "row" 
+                    , style "flex-wrap" "wrap" 
+                    ]  -- add new book
+                    [ label [ style "margin-right" "20px" ]
+                        [ text "Position"
+                        , input [ type_ "text"
+                                    , name "position"
+                                    , onInput SetBookPosition
+                                    , style "margin-left" "10px" ] []
+                        ]
+                    , label [ style "margin-right" "20px" ]
+                        [ text "Name"
+                        , input [ type_ "text"
+                                    , name "name"
+                                    , onInput SetBookName
+                                    , style "margin-left" "10px" ] []
+                        ]
+                    , button [ onClick NewBook ] [ text "Submit" ]
+                ]
+            , div [] [ viewError error ] -- add new book ERROR
+            ]
 
 
 viewError : Maybe Error -> Html Msg
