@@ -398,7 +398,7 @@ viewNewEntryForm error =
             , style "max-width" "300px"
             ] [ p [ style "text-align" "left"
                     , style "font-weight" "bold" ]
-                    [ text "Add new Entry: "] -- add new entry
+                    [ text "Add new Entry: "]
                 , div [ class "new-entry-inputs" 
                     , style "display" "inline-flex" 
                     , style "flex-direction" "column" 
@@ -406,7 +406,7 @@ viewNewEntryForm error =
                     , style "margin-bottom" "10px" 
                     , style "align-content" "flex-start" 
                     , style "align-items" "flex-start" 
-                    ]  -- add new entry
+                    ]
                     [ label [ style "margin-right" "20px"
                                 , style "margin" "5px" 
                                 ]
@@ -454,7 +454,7 @@ viewNewBookForm error =
             ] [ p [ style "text-align" "left"
                     , style "font-weight" "bold" ]
                     [ text ("Add new Book: ")
-                    ] -- add new book
+                    ]
                 , div [ class "new-book-inputs" 
                     , style "display" "inline-flex" 
                     , style "flex-direction" "column" 
@@ -462,7 +462,7 @@ viewNewBookForm error =
                     , style "margin-bottom" "10px" 
                     , style "align-content" "flex-start" 
                     , style "align-items" "flex-start" 
-                    ]  -- add new book
+                    ]
                     [ label [ style "margin-right" "20px"
                                 , style "margin" "5px" 
                                 ]
@@ -495,7 +495,7 @@ viewNewBookForm error =
                                 ]
                     , button [ onClick NewBook, style "margin-left" "5px" ] [ text "Submit" ]
                 ]
-            , div [] [ viewError error ] -- add new book ERROR
+            , div [] [ viewError error ] -- TODO: add new book ERROR
             ]
 
 
@@ -506,7 +506,6 @@ viewError error =
         Just (Error e) -> p [ style "text-align" "left" ] [ text "— Error: " , text e] 
 
 
--- each book should be a column, but rows should be uniform size
 viewTimeLine : Timeline -> Html Msg
 viewTimeLine timeline =
     div [  class "books"
@@ -575,11 +574,6 @@ viewLegend books =
     let 
         bookView b =
             div [ class "book-info"
-                    -- , style "background-color" "lightgrey"
-                    -- , style "border" "black"
-                    -- , style "border-left" "solid"
-                    -- , style "border-width" "0.5px"
-                    -- , style "width" "200px"
                     , style "margin-bottom" "10px"
                     , style "margin-right" "10px"
                     , style "display" "flex"
@@ -591,27 +585,17 @@ viewLegend books =
                             , style "width" "20px"
                             , style "padding-right" "10px"
                             , style "background-color" b.colour
-                            -- , style "display" "flex"
-                            -- , style "justify-content" "center"
-                            -- , style "align-items" "center"
                             ] []
                             , p [ style "min-height" "20px"
-                            -- , style "border-top" "solid"
-                            -- , style "border-width" "0.5px"
                             , style "margin" "0px"
                             , style "padding-left" "10px"
                             , style "padding-right" "10px"
-                            -- , style "background-color" "pink"
                             , style "display" "flex"
                             , style "justify-content" "center"
                             , style "align-items" "center"
                             ] [ text (getPosition b.position)]
                             , p [ style "min-height" "20px"
-                            -- , style "border-top" "solid"
-                            -- , style "border-width" "0.5px"
                             , style "margin" "0px"
-                            -- , style "padding" "10px"
-                            -- , style "background-color" "plum"
                             , style "display" "flex"
                             , style "justify-content" "center"
                             , style "align-items" "center"
