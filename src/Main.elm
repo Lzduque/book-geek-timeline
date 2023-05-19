@@ -46,7 +46,7 @@ type Error = Error String
 type alias Book = 
   { name : String
   , position : Position
---   , colour : String
+  , colour : String
 --   , year : Maybe Year
 --   , month : Maybe Month
   }
@@ -83,8 +83,8 @@ initialModel =
 initialTimeline : Timeline
 initialTimeline =
  { bookSeriesName = "Anita Blake"
-  , books = [ Book "Guilty Pleasures" (Position 1) --(Just (Year 0)) --(Just Jul)
-                , Book "The Laughing Corpse" (Position 2)-- (Just (Year 0)) --(Just Aug)
+  , books = [ Book "Guilty Pleasures" (Position 1) "lightpink" --(Just (Year 0)) --(Just Jul)
+                , Book "The Laughing Corpse" (Position 2) "wheat" -- (Just (Year 0)) --(Just Aug)
                 ]
     , entries = initialEntries
   }
@@ -93,6 +93,7 @@ initialBook : Book
 initialBook =
   { name = ""
   , position = Position 1
+  , colour = "lightgrey"
 --   , year = Just (Year 0)
 --   , month = Just Jan
   }
@@ -138,6 +139,7 @@ type Msg
   | NewEntry
   | SetBookPosition String
   | SetBookName String
+  | SetBookColour String
   | SetBookEntryContent String
   | SetBookEntryPosition String
   | SetBookEntryYear String
@@ -171,6 +173,11 @@ update msg model =
 
     SetBookName name ->
       ({ model | newBookFields = addBookName model.newBookFields name }
+      , Cmd.none
+      )
+
+    SetBookColour colour ->
+      ({ model | newBookFields = addBookColour model.newBookFields colour }
       , Cmd.none
       )
 
@@ -227,6 +234,11 @@ addBookPosition book position =
 addBookName : Book -> String -> Book
 addBookName book name =
     { book | name = name}
+
+
+addBookColour : Book -> String -> Book
+addBookColour book colour =
+    { book | colour = colour}
 
 
 -- addBookYear : Book -> Int -> Book
@@ -444,6 +456,15 @@ viewNewBookForm error =
                                             , onInput SetBookName
                                             , style "margin-left" "5px" ] []
                                 ]
+                    , label [ style "margin-right" "20px"
+                                , style "margin" "5px" 
+                                ]
+                                [ text "Colour: "
+                                , input [ type_ "text"
+                                            , name "colour"
+                                            , onInput SetBookColour
+                                            , style "margin-left" "5px" ] []
+                                ]
                     , button [ onClick NewBook ] [ text "Submit" ]
                 ]
             , div [] [ viewError error ] -- add new book ERROR
@@ -463,27 +484,34 @@ viewTimeLine timeline =
     div [  class "books"
             , style "display" "flex"
             , style "flex-direction" "column"
-            ] [ viewEntries timeline.entries, viewLegend timeline.books ]
+            ] [ viewEntries timeline.books timeline.entries, viewLegend timeline.books ]
 
 
 groupByPosition : List Entry -> List ( Entry, List Entry )
 groupByPosition entries = List.Extra.groupWhile (\a b -> (getPositionNum a.bookPosition) == (getPositionNum b.bookPosition)) (List.sortBy (\x -> getPositionNum x.bookPosition) entries)
     
 
-viewEntries : List Entry -> Html msg
-viewEntries entries =
+viewEntries : List Book -> List Entry -> Html msg
+viewEntries books entries =
+    let
+        groupedEntries = groupByPosition entries
+    in
     div [ class "books-entries"
             , style "display" "flex"
             , style "flex-direction" "row"
             , style "align-items" "stretch"
-            ] (List.map viewEntry (groupByPosition entries)
+            ] (List.map (\(a, b) -> viewBookEntries books (a :: b)) groupedEntries
             ) -- sorted and grouped now by the book position, not year, as MVP
 
 
-viewEntry : ( Entry, List Entry ) -> Html msg
-viewEntry group =
+viewBookEntries : List Book -> List Entry -> Html msg
+viewBookEntries books group =
     let
+        bookPosition = (Maybe.withDefault initialEntry (List.head group)).bookPosition
         entryView e =
+            let
+             bookColour = (Maybe.withDefault initialBook (List.Extra.find (\b -> b.position == bookPosition) books)).colour
+            in
             div []
                     [ p [  class "entry"
                             , style "height" "50px"
@@ -494,6 +522,7 @@ viewEntry group =
                             , style "display" "flex"
                             , style "justify-content" "flex-start"
                             , style "align-items" "center"
+                            , style "background-color" bookColour
                             ] [ text e.content ]
                     ]
     in div [ class "position-entries"
@@ -502,15 +531,14 @@ viewEntry group =
                 , style "align-items" "center" 
                 , style "justify-content" "flex-end" 
                 ] [ div [ class "entries"
-                , style "background-color" "lightgrey"
-                , style "border" "black"
-                , style "border-left" "solid"
-                , style "border-width" "0.5px"
-                , style "width" "200px"
-                , style "display" "flex"
-                , style "flex-direction" "column-reverse"
-                ] (List.map entryView ((Tuple.first  group) :: (Tuple.second group)))
-                , p [ class "position" ] [ text (getPosition(Tuple.first group).bookPosition) ]
+                            , style "border" "black"
+                            , style "border-left" "solid"
+                            , style "border-width" "0.5px"
+                            , style "width" "200px"
+                            , style "display" "flex"
+                            , style "flex-direction" "column-reverse"
+                        ] (List.map entryView group)
+                        , p [ class "position" ] [ text (getPosition bookPosition) ]
             ]
 
 
@@ -533,7 +561,7 @@ viewLegend books =
                     [ div [ style "height" "20px"
                             , style "width" "20px"
                             , style "padding-right" "10px"
-                            , style "background-color" "pink"
+                            , style "background-color" b.colour
                             -- , style "display" "flex"
                             -- , style "justify-content" "center"
                             -- , style "align-items" "center"
