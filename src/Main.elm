@@ -506,14 +506,6 @@ viewError error =
         Just (Error e) -> p [ style "text-align" "left" ] [ text "— Error: " , text e] 
 
 
-viewTimeLine : Timeline -> Html Msg
-viewTimeLine timeline =
-    div [  class "books"
-            , style "display" "flex"
-            , style "flex-direction" "column"
-            ] [ viewEntries timeline.books timeline.entries, viewLegend timeline.books ]
-
-
 groupByPosition : List Entry -> List ( Entry, List Entry )
 groupByPosition entries = List.Extra.groupWhile (\a b -> (getPositionNum a.bookPosition) == (getPositionNum b.bookPosition)) (List.sortBy (\x -> getPositionNum x.bookPosition) entries)
     
