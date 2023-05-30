@@ -420,7 +420,7 @@ viewNewEntryForm error =
                     , label [ style "margin-right" "20px"
                                 , style "margin" "5px" 
                                 ]
-                                [ text "Book Year: "
+                                [ text "Year: "
                                 , input [ type_ "text"
                                             , name "bookYear"
                                             , onInput SetBookEntryYear, style "margin-left" "5px"
